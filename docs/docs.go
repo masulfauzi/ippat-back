@@ -3752,6 +3752,12 @@ const docTemplate = `{
                         "required": true
                     },
                     {
+                        "type": "string",
+                        "description": "ID Kategori Soal",
+                        "name": "id_kategori_soal",
+                        "in": "formData"
+                    },
+                    {
                         "type": "integer",
                         "description": "Nomor urut soal",
                         "name": "no_soal",
@@ -4057,6 +4063,12 @@ const docTemplate = `{
                         "name": "id",
                         "in": "path",
                         "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "ID Kategori Soal",
+                        "name": "id_kategori_soal",
+                        "in": "formData"
                     },
                     {
                         "type": "integer",
@@ -5568,6 +5580,9 @@ const docTemplate = `{
                     "type": "string"
                 },
                 "id_bank_soal": {
+                    "type": "string"
+                },
+                "id_kategori_soal": {
                     "type": "string"
                 },
                 "kunci": {

@@ -13,8 +13,8 @@ import (
 )
 
 type SoalController struct {
-	service     service.SoalService
-	jadwalRepo  jadwalrepo.JadwalRepository
+	service    service.SoalService
+	jadwalRepo jadwalrepo.JadwalRepository
 }
 
 func NewSoalController(service service.SoalService, jadwalRepo jadwalrepo.JadwalRepository) *SoalController {
@@ -27,7 +27,8 @@ func NewSoalController(service service.SoalService, jadwalRepo jadwalrepo.Jadwal
 // @Tags         Soal
 // @Accept       multipart/form-data
 // @Produce      json
-// @Param        id_bank_soal  formData  string  true   "ID Bank Soal"
+// @Param        id_bank_soal      formData  string  true   "ID Bank Soal"
+// @Param        id_kategori_soal  formData  string  false  "ID Kategori Soal"
 // @Param        no_soal       formData  int     false  "Nomor urut soal"
 // @Param        soal          formData  string  false  "Teks soal"
 // @Param        gambar_soal   formData  file    false  "Gambar soal"
@@ -50,6 +51,7 @@ func (c *SoalController) CreateSoal(ctx *fiber.Ctx) error {
 	req := new(dto.CreateSoalRequest)
 
 	req.IdBankSoal = ctx.FormValue("id_bank_soal")
+	req.IdKategoriSoal = ctx.FormValue("id_kategori_soal")
 	req.Soal = ctx.FormValue("soal")
 	req.OpsiA = ctx.FormValue("opsi_a")
 	req.OpsiB = ctx.FormValue("opsi_b")
@@ -189,7 +191,8 @@ func (c *SoalController) GetSoalByBankSoal(ctx *fiber.Ctx) error {
 // @Tags         Soal
 // @Accept       multipart/form-data
 // @Produce      json
-// @Param        id           path      string  true   "ID Soal"
+// @Param        id               path      string  true   "ID Soal"
+// @Param        id_kategori_soal formData  string  false  "ID Kategori Soal"
 // @Param        no_soal      formData  int     false  "Nomor urut soal"
 // @Param        soal         formData  string  false  "Teks soal"
 // @Param        gambar_soal  formData  file    false  "Gambar soal"
@@ -212,6 +215,7 @@ func (c *SoalController) UpdateSoal(ctx *fiber.Ctx) error {
 	id := ctx.Params("id")
 	req := new(dto.UpdateSoalRequest)
 
+	req.IdKategoriSoal = ctx.FormValue("id_kategori_soal")
 	req.Soal = ctx.FormValue("soal")
 	req.OpsiA = ctx.FormValue("opsi_a")
 	req.OpsiB = ctx.FormValue("opsi_b")

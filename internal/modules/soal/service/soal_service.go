@@ -126,21 +126,22 @@ func (s *soalService) CreateSoal(req *dto.CreateSoalRequest) (*dto.SoalResponse,
 	}
 
 	soal := &model.Soal{
-		IdBankSoal: req.IdBankSoal,
-		NoSoal:     req.NoSoal,
-		Soal:       req.Soal,
-		GambarSoal: gambarSoalName,
-		OpsiA:      req.OpsiA,
-		OpsiB:      req.OpsiB,
-		OpsiC:      req.OpsiC,
-		OpsiD:      req.OpsiD,
-		OpsiE:      req.OpsiE,
-		GambarA:    gambarAName,
-		GambarB:    gambarBName,
-		GambarC:    gambarCName,
-		GambarD:    gambarDName,
-		GambarE:    gambarEName,
-		Kunci:      req.Kunci,
+		IdBankSoal:     req.IdBankSoal,
+		IdKategoriSoal: req.IdKategoriSoal,
+		NoSoal:         req.NoSoal,
+		Soal:           req.Soal,
+		GambarSoal:     gambarSoalName,
+		OpsiA:          req.OpsiA,
+		OpsiB:          req.OpsiB,
+		OpsiC:          req.OpsiC,
+		OpsiD:          req.OpsiD,
+		OpsiE:          req.OpsiE,
+		GambarA:        gambarAName,
+		GambarB:        gambarBName,
+		GambarC:        gambarCName,
+		GambarD:        gambarDName,
+		GambarE:        gambarEName,
+		Kunci:          req.Kunci,
 	}
 
 	if err := s.repo.Create(soal); err != nil {
@@ -305,6 +306,7 @@ func (s *soalService) UpdateSoal(id string, req *dto.UpdateSoalRequest) (*dto.So
 		soal.GambarE = newFilename
 	}
 
+	soal.IdKategoriSoal = req.IdKategoriSoal
 	soal.NoSoal = req.NoSoal
 	soal.Soal = req.Soal
 	soal.OpsiA = req.OpsiA
@@ -411,24 +413,25 @@ func (s *soalService) validateKunci(kunci string, opsiA, opsiB, opsiC, opsiD, op
 
 func (s *soalService) modelToResponse(soal *model.Soal) *dto.SoalResponse {
 	return &dto.SoalResponse{
-		ID:         soal.ID,
-		IdBankSoal: soal.IdBankSoal,
-		NoSoal:     soal.NoSoal,
-		Soal:       soal.Soal,
-		GambarSoal: s.buildImageURL(soal.GambarSoal, "soal"),
-		OpsiA:      soal.OpsiA,
-		OpsiB:      soal.OpsiB,
-		OpsiC:      soal.OpsiC,
-		OpsiD:      soal.OpsiD,
-		OpsiE:      soal.OpsiE,
-		GambarA:    s.buildImageURL(soal.GambarA, "opsi"),
-		GambarB:    s.buildImageURL(soal.GambarB, "opsi"),
-		GambarC:    s.buildImageURL(soal.GambarC, "opsi"),
-		GambarD:    s.buildImageURL(soal.GambarD, "opsi"),
-		GambarE:    s.buildImageURL(soal.GambarE, "opsi"),
-		Kunci:      soal.Kunci,
-		CreatedAt:  soal.CreatedAt.Format("2006-01-02 15:04:05"),
-		UpdatedAt:  soal.UpdatedAt.Format("2006-01-02 15:04:05"),
+		ID:             soal.ID,
+		IdBankSoal:     soal.IdBankSoal,
+		IdKategoriSoal: soal.IdKategoriSoal,
+		NoSoal:         soal.NoSoal,
+		Soal:           soal.Soal,
+		GambarSoal:     s.buildImageURL(soal.GambarSoal, "soal"),
+		OpsiA:          soal.OpsiA,
+		OpsiB:          soal.OpsiB,
+		OpsiC:          soal.OpsiC,
+		OpsiD:          soal.OpsiD,
+		OpsiE:          soal.OpsiE,
+		GambarA:        s.buildImageURL(soal.GambarA, "opsi"),
+		GambarB:        s.buildImageURL(soal.GambarB, "opsi"),
+		GambarC:        s.buildImageURL(soal.GambarC, "opsi"),
+		GambarD:        s.buildImageURL(soal.GambarD, "opsi"),
+		GambarE:        s.buildImageURL(soal.GambarE, "opsi"),
+		Kunci:          soal.Kunci,
+		CreatedAt:      soal.CreatedAt.Format("2006-01-02 15:04:05"),
+		UpdatedAt:      soal.UpdatedAt.Format("2006-01-02 15:04:05"),
 	}
 }
 
@@ -514,11 +517,11 @@ func (s *soalService) ImportSoalFromExcel(ctx context.Context, req *dto.ImportSo
 		// Upload gambar dari source URL ke MinIO jika ada
 		sourceBase := config.GetSoalImageSourceURL()
 		gambarSoal := s.downloadGambar(ctx, sourceBase, excelRow.GambarSoal, "soal")
-		gambarA    := s.downloadGambar(ctx, sourceBase, excelRow.GambarA,    "opsi")
-		gambarB    := s.downloadGambar(ctx, sourceBase, excelRow.GambarB,    "opsi")
-		gambarC    := s.downloadGambar(ctx, sourceBase, excelRow.GambarC,    "opsi")
-		gambarD    := s.downloadGambar(ctx, sourceBase, excelRow.GambarD,    "opsi")
-		gambarE    := s.downloadGambar(ctx, sourceBase, excelRow.GambarE,    "opsi")
+		gambarA := s.downloadGambar(ctx, sourceBase, excelRow.GambarA, "opsi")
+		gambarB := s.downloadGambar(ctx, sourceBase, excelRow.GambarB, "opsi")
+		gambarC := s.downloadGambar(ctx, sourceBase, excelRow.GambarC, "opsi")
+		gambarD := s.downloadGambar(ctx, sourceBase, excelRow.GambarD, "opsi")
+		gambarE := s.downloadGambar(ctx, sourceBase, excelRow.GambarE, "opsi")
 
 		// Create soal model
 		soal := model.Soal{

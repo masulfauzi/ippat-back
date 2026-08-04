@@ -3746,6 +3746,12 @@
                         "required": true
                     },
                     {
+                        "type": "string",
+                        "description": "ID Kategori Soal",
+                        "name": "id_kategori_soal",
+                        "in": "formData"
+                    },
+                    {
                         "type": "integer",
                         "description": "Nomor urut soal",
                         "name": "no_soal",
@@ -4051,6 +4057,12 @@
                         "name": "id",
                         "in": "path",
                         "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "ID Kategori Soal",
+                        "name": "id_kategori_soal",
+                        "in": "formData"
                     },
                     {
                         "type": "integer",
@@ -5562,6 +5574,9 @@
                     "type": "string"
                 },
                 "id_bank_soal": {
+                    "type": "string"
+                },
+                "id_kategori_soal": {
                     "type": "string"
                 },
                 "kunci": {

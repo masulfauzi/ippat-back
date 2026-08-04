@@ -713,6 +713,8 @@ definitions:
         type: string
       id_bank_soal:
         type: string
+      id_kategori_soal:
+        type: string
       kunci:
         type: string
       no_soal:
@@ -3185,6 +3187,10 @@ paths:
         name: id_bank_soal
         required: true
         type: string
+      - description: ID Kategori Soal
+        in: formData
+        name: id_kategori_soal
+        type: string
       - description: Nomor urut soal
         in: formData
         name: no_soal
@@ -3326,6 +3332,10 @@ paths:
         in: path
         name: id
         required: true
+        type: string
+      - description: ID Kategori Soal
+        in: formData
+        name: id_kategori_soal
         type: string
       - description: Nomor urut soal
         in: formData
