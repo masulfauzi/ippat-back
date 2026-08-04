@@ -26,6 +26,7 @@ func SetupJawabanRoutes(app *fiber.App, db *gorm.DB) {
 	jawaban.Get("/", ctrl.GetAllJawaban)
 	jawaban.Get("/:id", ctrl.GetJawabanByID)
 	jawaban.Put("/:id", middleware.JWTAuth(), ctrl.UpdateJawaban)
+	jawaban.Delete("/:id/jawaban", middleware.JWTAuth(), ctrl.ClearJawaban)
 	jawaban.Delete("/:id", middleware.JWTAuth(), ctrl.DeleteJawaban)
 	jawaban.Patch("/:id/restore", middleware.JWTAuth(), ctrl.RestoreJawaban)
 }

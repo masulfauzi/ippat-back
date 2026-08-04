@@ -8,6 +8,7 @@ import (
 	"syscall"
 
 	"backend/configs"
+	_ "backend/docs"
 	"backend/internal/database"
 	"backend/internal/middleware"
 	"backend/internal/storage"
@@ -25,7 +26,21 @@ import (
 	userroutes "backend/internal/modules/user/routes"
 
 	"github.com/gofiber/fiber/v2"
+	fiberswagger "github.com/swaggo/fiber-swagger"
 )
+
+// @title                       IPPAT Backend API
+// @version                     1.0
+// @description                 REST API untuk platform ujian online IPPAT (Fiber + GORM + PostgreSQL). Semua response dibungkus format {success, message, data, errors}.
+// @description                 Endpoint yang butuh login (guru/admin/peserta) ditandai kunci gembok di UI ini — klik "Authorize" dan isi `Bearer <token>` yang didapat dari /api/auth/login atau /api/auth/register.
+// @contact.name                IPPAT Backend Team
+// @license.name                Proprietary
+// @host                        localhost:3000
+// @BasePath                    /api
+// @securityDefinitions.apikey  BearerAuth
+// @in                          header
+// @name                        Authorization
+// @description                 Ketik "Bearer" diikuti spasi dan JWT token. Contoh: "Bearer eyJhbGciOi..."
 
 func main() {
 	if err := configs.LoadEnv(); err != nil {
@@ -84,6 +99,8 @@ func setupRoutes(app *fiber.App, appConfig *configs.AppConfig) {
 	})
 
 	app.Static("/uploads", "./uploads")
+
+	app.Get("/swagger/*", fiberswagger.WrapHandler)
 
 	authroutes.SetupAuthRoutes(app, database.DB)
 	userroutes.SetupUserRoutes(app, database.DB)

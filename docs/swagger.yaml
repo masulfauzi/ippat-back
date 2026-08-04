@@ -1,0 +1,3431 @@
+basePath: /api
+definitions:
+  backend_internal_helpers.Response:
+    properties:
+      data: {}
+      errors: {}
+      message:
+        type: string
+      success:
+        type: boolean
+    type: object
+  backend_internal_modules_auth_dto.AuthResponse:
+    properties:
+      email:
+        type: string
+      id:
+        type: string
+      name:
+        type: string
+      role:
+        type: string
+      token:
+        type: string
+    type: object
+  backend_internal_modules_auth_dto.CurrentUserResponse:
+    properties:
+      email:
+        type: string
+      id:
+        type: string
+      name:
+        type: string
+      role:
+        type: string
+    type: object
+  backend_internal_modules_auth_dto.LoginRequest:
+    properties:
+      password:
+        type: string
+      username:
+        type: string
+    required:
+    - password
+    - username
+    type: object
+  backend_internal_modules_auth_dto.RegisterRequest:
+    properties:
+      email:
+        type: string
+      name:
+        type: string
+      password:
+        minLength: 6
+        type: string
+      username:
+        type: string
+    required:
+    - email
+    - name
+    - password
+    - username
+    type: object
+  backend_internal_modules_bank_soal_dto.BankSoalListResponse:
+    properties:
+      data:
+        items:
+          $ref: '#/definitions/backend_internal_modules_bank_soal_dto.BankSoalResponse'
+        type: array
+      page:
+        type: integer
+      page_size:
+        type: integer
+      total:
+        type: integer
+      total_page:
+        type: integer
+    type: object
+  backend_internal_modules_bank_soal_dto.BankSoalResponse:
+    properties:
+      created_at:
+        type: string
+      deskripsi:
+        type: string
+      id:
+        type: string
+      id_mapel:
+        type: string
+      jml_soal:
+        type: integer
+      nama_bank_soal:
+        type: string
+      nama_mapel:
+        type: string
+      updated_at:
+        type: string
+    type: object
+  backend_internal_modules_bank_soal_dto.CreateBankSoalRequest:
+    properties:
+      deskripsi:
+        type: string
+      id_mapel:
+        type: string
+      jml_soal:
+        minimum: 0
+        type: integer
+      nama_bank_soal:
+        type: string
+    required:
+    - id_mapel
+    - jml_soal
+    - nama_bank_soal
+    type: object
+  backend_internal_modules_bank_soal_dto.UpdateBankSoalRequest:
+    properties:
+      deskripsi:
+        type: string
+      id_mapel:
+        type: string
+      jml_soal:
+        minimum: 0
+        type: integer
+      nama_bank_soal:
+        type: string
+    required:
+    - id_mapel
+    - jml_soal
+    - nama_bank_soal
+    type: object
+  backend_internal_modules_jadwal_dto.CreateJadwalRequest:
+    properties:
+      acak_opsi:
+        type: integer
+      acak_soal:
+        type: integer
+      durasi:
+        minimum: 1
+        type: integer
+      id_bank_soal:
+        type: string
+      id_kelas:
+        items:
+          type: string
+        type: array
+      nama_ujian:
+        type: string
+      tingkat:
+        type: string
+      wkt_mulai:
+        type: string
+      wkt_selesai:
+        type: string
+    required:
+    - durasi
+    - id_bank_soal
+    - id_kelas
+    - nama_ujian
+    - tingkat
+    - wkt_mulai
+    - wkt_selesai
+    type: object
+  backend_internal_modules_jadwal_dto.JadwalAktifResponse:
+    properties:
+      acak_opsi:
+        type: integer
+      acak_soal:
+        type: integer
+      durasi:
+        type: integer
+      id:
+        type: string
+      id_bank_soal:
+        type: string
+      id_nilai:
+        type: string
+      nama_bank_soal:
+        type: string
+      nama_ujian:
+        type: string
+      status_pengerjaan:
+        type: string
+      tingkat:
+        type: string
+      wkt_mulai:
+        type: string
+      wkt_selesai:
+        type: string
+    type: object
+  backend_internal_modules_jadwal_dto.JadwalListResponse:
+    properties:
+      data:
+        items:
+          $ref: '#/definitions/backend_internal_modules_jadwal_dto.JadwalResponse'
+        type: array
+      page:
+        type: integer
+      page_size:
+        type: integer
+      total:
+        type: integer
+      total_page:
+        type: integer
+    type: object
+  backend_internal_modules_jadwal_dto.JadwalResponse:
+    properties:
+      acak_opsi:
+        type: integer
+      acak_soal:
+        type: integer
+      created_at:
+        type: string
+      durasi:
+        type: integer
+      id:
+        type: string
+      id_bank_soal:
+        type: string
+      id_jurusan:
+        items:
+          $ref: '#/definitions/backend_internal_modules_jadwal_dto.JurusanItem'
+        type: array
+      id_kelas:
+        items:
+          $ref: '#/definitions/backend_internal_modules_jadwal_dto.KelasItem'
+        type: array
+      nama_bank_soal:
+        type: string
+      nama_ujian:
+        type: string
+      tingkat:
+        type: string
+      updated_at:
+        type: string
+      wkt_mulai:
+        type: string
+      wkt_selesai:
+        type: string
+    type: object
+  backend_internal_modules_jadwal_dto.JurusanItem:
+    properties:
+      id:
+        type: string
+      id_jurusan:
+        type: string
+      nama_jurusan:
+        type: string
+    type: object
+  backend_internal_modules_jadwal_dto.KelasItem:
+    properties:
+      id:
+        type: string
+      id_kelas:
+        type: string
+      nama_kelas:
+        type: string
+    type: object
+  backend_internal_modules_jadwal_dto.UpdateJadwalRequest:
+    properties:
+      acak_opsi:
+        type: integer
+      acak_soal:
+        type: integer
+      durasi:
+        minimum: 1
+        type: integer
+      id_bank_soal:
+        type: string
+      id_kelas:
+        items:
+          type: string
+        type: array
+      nama_ujian:
+        type: string
+      tingkat:
+        type: string
+      wkt_mulai:
+        type: string
+      wkt_selesai:
+        type: string
+    required:
+    - durasi
+    - id_bank_soal
+    - id_kelas
+    - nama_ujian
+    - tingkat
+    - wkt_mulai
+    - wkt_selesai
+    type: object
+  backend_internal_modules_jadwal_kelas_dto.CreateJadwalKelasRequest:
+    properties:
+      id_jadwal:
+        type: string
+      id_kelas:
+        type: string
+    required:
+    - id_jadwal
+    - id_kelas
+    type: object
+  backend_internal_modules_jadwal_kelas_dto.JadwalKelasListResponse:
+    properties:
+      data:
+        items:
+          $ref: '#/definitions/backend_internal_modules_jadwal_kelas_dto.JadwalKelasResponse'
+        type: array
+      page:
+        type: integer
+      page_size:
+        type: integer
+      total:
+        type: integer
+      total_page:
+        type: integer
+    type: object
+  backend_internal_modules_jadwal_kelas_dto.JadwalKelasResponse:
+    properties:
+      created_at:
+        type: string
+      id:
+        type: string
+      id_jadwal:
+        type: string
+      id_kelas:
+        type: string
+      nama_bank_soal:
+        type: string
+      nama_kelas:
+        type: string
+      updated_at:
+        type: string
+      wkt_mulai:
+        type: string
+      wkt_selesai:
+        type: string
+    type: object
+  backend_internal_modules_jadwal_kelas_dto.UpdateJadwalKelasRequest:
+    properties:
+      id_jadwal:
+        type: string
+      id_kelas:
+        type: string
+    required:
+    - id_jadwal
+    - id_kelas
+    type: object
+  backend_internal_modules_jawaban_dto.CreateJawabanRequest:
+    properties:
+      id_nilai:
+        type: string
+      id_peserta:
+        type: string
+      id_soal:
+        type: string
+      jawaban:
+        enum:
+        - A
+        - B
+        - C
+        - D
+        - E
+        type: string
+      no_urut:
+        type: integer
+    required:
+    - id_nilai
+    - id_peserta
+    - id_soal
+    - jawaban
+    - no_urut
+    type: object
+  backend_internal_modules_jawaban_dto.JawabanListResponse:
+    properties:
+      data:
+        items:
+          $ref: '#/definitions/backend_internal_modules_jawaban_dto.JawabanResponse'
+        type: array
+      page:
+        type: integer
+      page_size:
+        type: integer
+      total:
+        type: integer
+      total_page:
+        type: integer
+    type: object
+  backend_internal_modules_jawaban_dto.JawabanResponse:
+    properties:
+      created_at:
+        type: string
+      gambar_a:
+        type: string
+      gambar_b:
+        type: string
+      gambar_c:
+        type: string
+      gambar_d:
+        type: string
+      gambar_e:
+        type: string
+      id:
+        type: string
+      id_nilai:
+        type: string
+      id_peserta:
+        type: string
+      id_soal:
+        type: string
+      is_benar:
+        type: integer
+      jawaban:
+        type: string
+      kunci:
+        type: string
+      nama_peserta:
+        type: string
+      no_soal:
+        type: integer
+      no_urut:
+        type: integer
+      opsi_a:
+        type: string
+      opsi_b:
+        type: string
+      opsi_c:
+        type: string
+      opsi_d:
+        type: string
+      opsi_e:
+        type: string
+      soal:
+        type: string
+      updated_at:
+        type: string
+    type: object
+  backend_internal_modules_jawaban_dto.UpdateJawabanRequest:
+    properties:
+      jawaban:
+        enum:
+        - A
+        - B
+        - C
+        - D
+        - E
+        type: string
+    required:
+    - jawaban
+    type: object
+  backend_internal_modules_jurusan_dto.CreateJurusanRequest:
+    properties:
+      nama_jurusan:
+        type: string
+    required:
+    - nama_jurusan
+    type: object
+  backend_internal_modules_jurusan_dto.JurusanListResponse:
+    properties:
+      data:
+        items:
+          $ref: '#/definitions/backend_internal_modules_jurusan_dto.JurusanResponse'
+        type: array
+      page:
+        type: integer
+      page_size:
+        type: integer
+      total:
+        type: integer
+      total_page:
+        type: integer
+    type: object
+  backend_internal_modules_jurusan_dto.JurusanResponse:
+    properties:
+      created_at:
+        type: string
+      id:
+        type: string
+      nama_jurusan:
+        type: string
+      updated_at:
+        type: string
+    type: object
+  backend_internal_modules_jurusan_dto.UpdateJurusanRequest:
+    properties:
+      nama_jurusan:
+        type: string
+    required:
+    - nama_jurusan
+    type: object
+  backend_internal_modules_kelas_dto.CreateKelasRequest:
+    properties:
+      id_jurusan:
+        type: string
+      nama_kelas:
+        type: string
+      tingkat:
+        type: string
+    required:
+    - id_jurusan
+    - nama_kelas
+    - tingkat
+    type: object
+  backend_internal_modules_kelas_dto.KelasListResponse:
+    properties:
+      data:
+        items:
+          $ref: '#/definitions/backend_internal_modules_kelas_dto.KelasResponse'
+        type: array
+      page:
+        type: integer
+      page_size:
+        type: integer
+      total:
+        type: integer
+      total_page:
+        type: integer
+    type: object
+  backend_internal_modules_kelas_dto.KelasResponse:
+    properties:
+      created_at:
+        type: string
+      id:
+        type: string
+      id_jurusan:
+        type: string
+      nama_jurusan:
+        type: string
+      nama_kelas:
+        type: string
+      tingkat:
+        type: string
+      updated_at:
+        type: string
+    type: object
+  backend_internal_modules_kelas_dto.UpdateKelasRequest:
+    properties:
+      id_jurusan:
+        type: string
+      nama_kelas:
+        type: string
+      tingkat:
+        type: string
+    required:
+    - id_jurusan
+    - nama_kelas
+    - tingkat
+    type: object
+  backend_internal_modules_mapel_dto.CreateMapelRequest:
+    properties:
+      deskripsi:
+        type: string
+      kode_mapel:
+        maxLength: 20
+        type: string
+      nama_mapel:
+        type: string
+    required:
+    - kode_mapel
+    - nama_mapel
+    type: object
+  backend_internal_modules_mapel_dto.MapelListResponse:
+    properties:
+      data:
+        items:
+          $ref: '#/definitions/backend_internal_modules_mapel_dto.MapelResponse'
+        type: array
+      page:
+        type: integer
+      page_size:
+        type: integer
+      total:
+        type: integer
+      total_page:
+        type: integer
+    type: object
+  backend_internal_modules_mapel_dto.MapelResponse:
+    properties:
+      created_at:
+        type: string
+      deskripsi:
+        type: string
+      id:
+        type: string
+      kode_mapel:
+        type: string
+      nama_mapel:
+        type: string
+      updated_at:
+        type: string
+    type: object
+  backend_internal_modules_mapel_dto.UpdateMapelRequest:
+    properties:
+      deskripsi:
+        type: string
+      kode_mapel:
+        maxLength: 20
+        type: string
+      nama_mapel:
+        type: string
+    required:
+    - kode_mapel
+    - nama_mapel
+    type: object
+  backend_internal_modules_nilai_dto.CreateNilaiRequest:
+    properties:
+      aktivitas_terakhir:
+        type: string
+      id_jadwal:
+        type: string
+      id_peserta:
+        type: string
+      nilai:
+        type: number
+      wkt_mulai:
+        type: string
+      wkt_selesai:
+        type: string
+    required:
+    - id_jadwal
+    - id_peserta
+    - nilai
+    type: object
+  backend_internal_modules_nilai_dto.NilaiListResponse:
+    properties:
+      data:
+        items:
+          $ref: '#/definitions/backend_internal_modules_nilai_dto.NilaiResponse'
+        type: array
+      page:
+        type: integer
+      page_size:
+        type: integer
+      total:
+        type: integer
+      total_page:
+        type: integer
+    type: object
+  backend_internal_modules_nilai_dto.NilaiResponse:
+    properties:
+      aktivitas_terakhir:
+        type: string
+      created_at:
+        type: string
+      id:
+        type: string
+      id_jadwal:
+        type: string
+      id_peserta:
+        type: string
+      nama_peserta:
+        type: string
+      nama_ujian:
+        type: string
+      nilai:
+        type: number
+      updated_at:
+        type: string
+      wkt_mulai:
+        type: string
+      wkt_selesai:
+        type: string
+    type: object
+  backend_internal_modules_nilai_dto.UpdateNilaiRequest:
+    properties:
+      aktivitas_terakhir:
+        type: string
+      id_jadwal:
+        type: string
+      id_peserta:
+        type: string
+      nilai:
+        type: number
+      wkt_mulai:
+        type: string
+      wkt_selesai:
+        type: string
+    type: object
+  backend_internal_modules_peserta_dto.CreatePesertaRequest:
+    properties:
+      id_kelas:
+        type: string
+      nama:
+        type: string
+      password:
+        minLength: 6
+        type: string
+      username:
+        type: string
+    required:
+    - id_kelas
+    - nama
+    - password
+    - username
+    type: object
+  backend_internal_modules_peserta_dto.PesertaListResponse:
+    properties:
+      data:
+        items:
+          $ref: '#/definitions/backend_internal_modules_peserta_dto.PesertaResponse'
+        type: array
+      page:
+        type: integer
+      page_size:
+        type: integer
+      total:
+        type: integer
+      total_page:
+        type: integer
+    type: object
+  backend_internal_modules_peserta_dto.PesertaResponse:
+    properties:
+      created_at:
+        type: string
+      id:
+        type: string
+      id_kelas:
+        type: string
+      nama:
+        type: string
+      nama_kelas:
+        type: string
+      updated_at:
+        type: string
+      username:
+        type: string
+    type: object
+  backend_internal_modules_peserta_dto.UpdatePesertaRequest:
+    properties:
+      id_kelas:
+        type: string
+      nama:
+        type: string
+      password:
+        type: string
+      username:
+        type: string
+    required:
+    - id_kelas
+    - nama
+    - username
+    type: object
+  backend_internal_modules_soal_dto.ImportSoalErrorDetail:
+    properties:
+      error:
+        type: string
+      row:
+        type: integer
+    type: object
+  backend_internal_modules_soal_dto.ImportSoalResponse:
+    properties:
+      errors:
+        items:
+          $ref: '#/definitions/backend_internal_modules_soal_dto.ImportSoalErrorDetail'
+        type: array
+      import_id:
+        type: string
+      summary:
+        additionalProperties:
+          type: integer
+        type: object
+      timestamp:
+        type: string
+      total_failed:
+        type: integer
+      total_processed:
+        type: integer
+      total_success:
+        type: integer
+    type: object
+  backend_internal_modules_soal_dto.SoalListResponse:
+    properties:
+      data:
+        items:
+          $ref: '#/definitions/backend_internal_modules_soal_dto.SoalResponse'
+        type: array
+      page:
+        type: integer
+      page_size:
+        type: integer
+      total:
+        type: integer
+      total_page:
+        type: integer
+    type: object
+  backend_internal_modules_soal_dto.SoalResponse:
+    properties:
+      created_at:
+        type: string
+      gambar_a:
+        type: string
+      gambar_b:
+        type: string
+      gambar_c:
+        type: string
+      gambar_d:
+        type: string
+      gambar_e:
+        type: string
+      gambar_soal:
+        type: string
+      id:
+        type: string
+      id_bank_soal:
+        type: string
+      kunci:
+        type: string
+      no_soal:
+        type: integer
+      opsi_a:
+        type: string
+      opsi_b:
+        type: string
+      opsi_c:
+        type: string
+      opsi_d:
+        type: string
+      opsi_e:
+        type: string
+      soal:
+        type: string
+      updated_at:
+        type: string
+    type: object
+  backend_internal_modules_user_dto.CreateUserRequest:
+    properties:
+      email:
+        type: string
+      name:
+        type: string
+      password:
+        minLength: 6
+        type: string
+    required:
+    - email
+    - name
+    - password
+    type: object
+  backend_internal_modules_user_dto.UpdateUserRequest:
+    properties:
+      email:
+        type: string
+      name:
+        type: string
+      role:
+        type: string
+    type: object
+  backend_internal_modules_user_dto.UserResponse:
+    properties:
+      created_at:
+        type: string
+      email:
+        type: string
+      id:
+        type: string
+      name:
+        type: string
+      role:
+        type: string
+      status:
+        type: string
+      updated_at:
+        type: string
+    type: object
+host: localhost:3000
+info:
+  contact:
+    name: IPPAT Backend Team
+  description: |-
+    REST API untuk platform ujian online IPPAT (Fiber + GORM + PostgreSQL). Semua response dibungkus format {success, message, data, errors}.
+    Endpoint yang butuh login (guru/admin/peserta) ditandai kunci gembok di UI ini — klik "Authorize" dan isi `Bearer <token>` yang didapat dari /api/auth/login atau /api/auth/register.
+  license:
+    name: Proprietary
+  title: IPPAT Backend API
+  version: "1.0"
+paths:
+  /auth/login:
+    post:
+      consumes:
+      - application/json
+      description: Login untuk user (guru/admin) maupun peserta menggunakan username
+        & password. Mengembalikan JWT token yang dipakai sebagai Bearer token di endpoint
+        lain.
+      parameters:
+      - description: Kredensial login
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/backend_internal_modules_auth_dto.LoginRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/backend_internal_helpers.Response'
+            - properties:
+                data:
+                  $ref: '#/definitions/backend_internal_modules_auth_dto.AuthResponse'
+              type: object
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/backend_internal_helpers.Response'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/backend_internal_helpers.Response'
+      summary: Login
+      tags:
+      - Auth
+  /auth/me:
+    get:
+      description: Mengembalikan data profil sesuai token JWT yang dikirim (mendukung
+        role user maupun peserta).
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/backend_internal_helpers.Response'
+            - properties:
+                data:
+                  $ref: '#/definitions/backend_internal_modules_auth_dto.CurrentUserResponse'
+              type: object
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/backend_internal_helpers.Response'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/backend_internal_helpers.Response'
+      security:
+      - BearerAuth: []
+      summary: Profil user yang sedang login
+      tags:
+      - Auth
+  /auth/register:
+    post:
+      consumes:
+      - application/json
+      description: Membuat akun user (guru/admin) baru. Untuk akun peserta, gunakan
+        endpoint POST /peserta.
+      parameters:
+      - description: Data registrasi
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/backend_internal_modules_auth_dto.RegisterRequest'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            allOf:
+            - $ref: '#/definitions/backend_internal_helpers.Response'
+            - properties:
+                data:
+                  $ref: '#/definitions/backend_internal_modules_auth_dto.AuthResponse'
+              type: object
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/backend_internal_helpers.Response'
+      summary: Registrasi user baru
+      tags:
+      - Auth
+  /bank-soal:
+    get:
+      parameters:
+      - default: 1
+        description: Nomor halaman
+        in: query
+        name: page
+        type: integer
+      - default: 10
+        description: Jumlah data per halaman
+        in: query
+        name: page_size
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/backend_internal_helpers.Response'
+            - properties:
+                data:
+                  $ref: '#/definitions/backend_internal_modules_bank_soal_dto.BankSoalListResponse'
+              type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/backend_internal_helpers.Response'
+      summary: List bank soal
+      tags:
+      - Bank Soal
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: Data bank soal
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/backend_internal_modules_bank_soal_dto.CreateBankSoalRequest'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            allOf:
+            - $ref: '#/definitions/backend_internal_helpers.Response'
+            - properties:
+                data:
+                  $ref: '#/definitions/backend_internal_modules_bank_soal_dto.BankSoalResponse'
+              type: object
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/backend_internal_helpers.Response'
+      security:
+      - BearerAuth: []
+      summary: Buat bank soal baru
+      tags:
+      - Bank Soal
+  /bank-soal/{id}:
+    delete:
+      parameters:
+      - description: ID Bank Soal
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/backend_internal_helpers.Response'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/backend_internal_helpers.Response'
+      security:
+      - BearerAuth: []
+      summary: Hapus (soft delete) bank soal
+      tags:
+      - Bank Soal
+    get:
+      parameters:
+      - description: ID Bank Soal
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/backend_internal_helpers.Response'
+            - properties:
+                data:
+                  $ref: '#/definitions/backend_internal_modules_bank_soal_dto.BankSoalResponse'
+              type: object
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/backend_internal_helpers.Response'
+      summary: Detail bank soal
+      tags:
+      - Bank Soal
+    put:
+      consumes:
+      - application/json
+      parameters:
+      - description: ID Bank Soal
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: Data bank soal
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/backend_internal_modules_bank_soal_dto.UpdateBankSoalRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/backend_internal_helpers.Response'
+            - properties:
+                data:
+                  $ref: '#/definitions/backend_internal_modules_bank_soal_dto.BankSoalResponse'
+              type: object
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/backend_internal_helpers.Response'
+      security:
+      - BearerAuth: []
+      summary: Update bank soal
+      tags:
+      - Bank Soal
+  /bank-soal/{id}/restore:
+    patch:
+      parameters:
+      - description: ID Bank Soal
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/backend_internal_helpers.Response'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/backend_internal_helpers.Response'
+      security:
+      - BearerAuth: []
+      summary: Pulihkan bank soal yang sudah dihapus
+      tags:
+      - Bank Soal
+  /bank-soal/mapel/{mapel_id}:
+    get:
+      parameters:
+      - description: ID Mapel
+        in: path
+        name: mapel_id
+        required: true
+        type: string
+      - default: 1
+        description: Nomor halaman
+        in: query
+        name: page
+        type: integer
+      - default: 10
+        description: Jumlah data per halaman
+        in: query
+        name: page_size
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/backend_internal_helpers.Response'
+            - properties:
+                data:
+                  $ref: '#/definitions/backend_internal_modules_bank_soal_dto.BankSoalListResponse'
+              type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/backend_internal_helpers.Response'
+      summary: List bank soal berdasarkan mapel
+      tags:
+      - Bank Soal
+  /jadwal:
+    get:
+      parameters:
+      - default: 1
+        description: Nomor halaman
+        in: query
+        name: page
+        type: integer
+      - default: 10
+        description: Jumlah data per halaman
+        in: query
+        name: page_size
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/backend_internal_helpers.Response'
+            - properties:
+                data:
+                  $ref: '#/definitions/backend_internal_modules_jadwal_dto.JadwalListResponse'
+              type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/backend_internal_helpers.Response'
+      summary: List jadwal ujian
+      tags:
+      - Jadwal
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: Data jadwal
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/backend_internal_modules_jadwal_dto.CreateJadwalRequest'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            allOf:
+            - $ref: '#/definitions/backend_internal_helpers.Response'
+            - properties:
+                data:
+                  $ref: '#/definitions/backend_internal_modules_jadwal_dto.JadwalResponse'
+              type: object
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/backend_internal_helpers.Response'
+      security:
+      - BearerAuth: []
+      summary: Buat jadwal ujian baru
+      tags:
+      - Jadwal
+  /jadwal-kelas:
+    get:
+      parameters:
+      - default: 1
+        description: Nomor halaman
+        in: query
+        name: page
+        type: integer
+      - default: 10
+        description: Jumlah data per halaman
+        in: query
+        name: page_size
+        type: integer
+      - description: Filter berdasarkan ID Jadwal
+        in: query
+        name: id_jadwal
+        type: string
+      - description: Filter berdasarkan ID Kelas
+        in: query
+        name: id_kelas
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/backend_internal_helpers.Response'
+            - properties:
+                data:
+                  $ref: '#/definitions/backend_internal_modules_jadwal_kelas_dto.JadwalKelasListResponse'
+              type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/backend_internal_helpers.Response'
+      summary: List relasi jadwal-kelas
+      tags:
+      - Jadwal Kelas
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: Data jadwal-kelas
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/backend_internal_modules_jadwal_kelas_dto.CreateJadwalKelasRequest'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            allOf:
+            - $ref: '#/definitions/backend_internal_helpers.Response'
+            - properties:
+                data:
+                  $ref: '#/definitions/backend_internal_modules_jadwal_kelas_dto.JadwalKelasResponse'
+              type: object
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/backend_internal_helpers.Response'
+      security:
+      - BearerAuth: []
+      summary: Kaitkan jadwal ujian dengan kelas
+      tags:
+      - Jadwal Kelas
+  /jadwal-kelas/{id}:
+    delete:
+      parameters:
+      - description: ID Jadwal Kelas
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/backend_internal_helpers.Response'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/backend_internal_helpers.Response'
+      security:
+      - BearerAuth: []
+      summary: Hapus (soft delete) relasi jadwal-kelas
+      tags:
+      - Jadwal Kelas
+    get:
+      parameters:
+      - description: ID Jadwal Kelas
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/backend_internal_helpers.Response'
+            - properties:
+                data:
+                  $ref: '#/definitions/backend_internal_modules_jadwal_kelas_dto.JadwalKelasResponse'
+              type: object
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/backend_internal_helpers.Response'
+      summary: Detail relasi jadwal-kelas
+      tags:
+      - Jadwal Kelas
+    put:
+      consumes:
+      - application/json
+      parameters:
+      - description: ID Jadwal Kelas
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: Data jadwal-kelas
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/backend_internal_modules_jadwal_kelas_dto.UpdateJadwalKelasRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/backend_internal_helpers.Response'
+            - properties:
+                data:
+                  $ref: '#/definitions/backend_internal_modules_jadwal_kelas_dto.JadwalKelasResponse'
+              type: object
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/backend_internal_helpers.Response'
+      security:
+      - BearerAuth: []
+      summary: Update relasi jadwal-kelas
+      tags:
+      - Jadwal Kelas
+  /jadwal/{id}:
+    delete:
+      parameters:
+      - description: ID Jadwal
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/backend_internal_helpers.Response'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/backend_internal_helpers.Response'
+      security:
+      - BearerAuth: []
+      summary: Hapus (soft delete) jadwal ujian
+      tags:
+      - Jadwal
+    get:
+      parameters:
+      - description: ID Jadwal
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/backend_internal_helpers.Response'
+            - properties:
+                data:
+                  $ref: '#/definitions/backend_internal_modules_jadwal_dto.JadwalResponse'
+              type: object
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/backend_internal_helpers.Response'
+      summary: Detail jadwal ujian
+      tags:
+      - Jadwal
+    put:
+      consumes:
+      - application/json
+      parameters:
+      - description: ID Jadwal
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: Data jadwal
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/backend_internal_modules_jadwal_dto.UpdateJadwalRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/backend_internal_helpers.Response'
+            - properties:
+                data:
+                  $ref: '#/definitions/backend_internal_modules_jadwal_dto.JadwalResponse'
+              type: object
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/backend_internal_helpers.Response'
+      security:
+      - BearerAuth: []
+      summary: Update jadwal ujian
+      tags:
+      - Jadwal
+  /jadwal/{id}/restore:
+    patch:
+      parameters:
+      - description: ID Jadwal
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/backend_internal_helpers.Response'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/backend_internal_helpers.Response'
+      security:
+      - BearerAuth: []
+      summary: Pulihkan jadwal yang sudah dihapus
+      tags:
+      - Jadwal
+  /jadwal/aktif/hari-ini:
+    get:
+      description: Mengambil daftar jadwal ujian yang berlangsung hari ini untuk kelas
+        peserta yang sedang login, lengkap dengan status pengerjaannya (belum mulai/sedang
+        ujian/selesai).
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/backend_internal_helpers.Response'
+            - properties:
+                data:
+                  items:
+                    $ref: '#/definitions/backend_internal_modules_jadwal_dto.JadwalAktifResponse'
+                  type: array
+              type: object
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/backend_internal_helpers.Response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/backend_internal_helpers.Response'
+      security:
+      - BearerAuth: []
+      summary: Jadwal ujian aktif hari ini untuk peserta yang login
+      tags:
+      - Jadwal
+  /jadwal/bank-soal/{bank_soal_id}:
+    get:
+      parameters:
+      - description: ID Bank Soal
+        in: path
+        name: bank_soal_id
+        required: true
+        type: string
+      - default: 1
+        description: Nomor halaman
+        in: query
+        name: page
+        type: integer
+      - default: 10
+        description: Jumlah data per halaman
+        in: query
+        name: page_size
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/backend_internal_helpers.Response'
+            - properties:
+                data:
+                  $ref: '#/definitions/backend_internal_modules_jadwal_dto.JadwalListResponse'
+              type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/backend_internal_helpers.Response'
+      summary: List jadwal berdasarkan bank soal
+      tags:
+      - Jadwal
+  /jawaban:
+    get:
+      parameters:
+      - default: 1
+        description: Nomor halaman
+        in: query
+        name: page
+        type: integer
+      - default: 10
+        description: Jumlah data per halaman
+        in: query
+        name: page_size
+        type: integer
+      - description: Filter berdasarkan ID Nilai (attempt ujian)
+        in: query
+        name: id_nilai
+        type: string
+      - description: Filter berdasarkan ID Peserta
+        in: query
+        name: id_peserta
+        type: string
+      - description: Filter berdasarkan ID Soal
+        in: query
+        name: id_soal
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/backend_internal_helpers.Response'
+            - properties:
+                data:
+                  $ref: '#/definitions/backend_internal_modules_jawaban_dto.JawabanListResponse'
+              type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/backend_internal_helpers.Response'
+      summary: List jawaban
+      tags:
+      - Jawaban
+    post:
+      consumes:
+      - application/json
+      description: Dipanggil peserta saat memilih jawaban pertama kali untuk suatu
+        soal dalam satu attempt ujian (id_nilai). Jika baris jawaban untuk kombinasi
+        id_nilai+id_soal sudah ada (baris ini otomatis dibuat kosong saat ujian dimulai),
+        gunakan PUT /jawaban/{id} untuk mengubahnya.
+      parameters:
+      - description: Data jawaban
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/backend_internal_modules_jawaban_dto.CreateJawabanRequest'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            allOf:
+            - $ref: '#/definitions/backend_internal_helpers.Response'
+            - properties:
+                data:
+                  $ref: '#/definitions/backend_internal_modules_jawaban_dto.JawabanResponse'
+              type: object
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/backend_internal_helpers.Response'
+      security:
+      - BearerAuth: []
+      summary: Submit jawaban peserta untuk satu soal
+      tags:
+      - Jawaban
+  /jawaban/{id}:
+    delete:
+      description: 'Endpoint administratif: menghapus seluruh baris jawaban (soal
+        ikut hilang dari daftar attempt ujian tersebut). Untuk membatalkan pilihan
+        jawaban peserta tanpa menghilangkan soalnya, gunakan DELETE /jawaban/{id}/jawaban.'
+      parameters:
+      - description: ID Jawaban
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/backend_internal_helpers.Response'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/backend_internal_helpers.Response'
+      security:
+      - BearerAuth: []
+      summary: Hapus (soft delete) baris jawaban
+      tags:
+      - Jawaban
+    get:
+      parameters:
+      - description: ID Jawaban
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/backend_internal_helpers.Response'
+            - properties:
+                data:
+                  $ref: '#/definitions/backend_internal_modules_jawaban_dto.JawabanResponse'
+              type: object
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/backend_internal_helpers.Response'
+      summary: Detail jawaban
+      tags:
+      - Jawaban
+    put:
+      consumes:
+      - application/json
+      description: Dipanggil saat peserta mengganti pilihan jawaban untuk soal yang
+        sama (baris jawaban sudah ada — lihat GET /jawaban/nilai/{id_nilai} untuk
+        mendapatkan id-nya). Jawaban dievaluasi ulang (is_benar) terhadap kunci soal.
+      parameters:
+      - description: ID Jawaban
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: Pilihan jawaban baru (A/B/C/D/E)
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/backend_internal_modules_jawaban_dto.UpdateJawabanRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/backend_internal_helpers.Response'
+            - properties:
+                data:
+                  $ref: '#/definitions/backend_internal_modules_jawaban_dto.JawabanResponse'
+              type: object
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/backend_internal_helpers.Response'
+      security:
+      - BearerAuth: []
+      summary: Ubah pilihan jawaban peserta
+      tags:
+      - Jawaban
+  /jawaban/{id}/jawaban:
+    delete:
+      description: Mengosongkan isi jawaban (jawaban & is_benar diset null) TANPA
+        menghapus baris soal dari attempt ujian — soal tetap muncul di daftar ujian
+        sebagai "belum dijawab". Dipakai saat peserta ragu dengan jawabannya dan ingin
+        membatalkannya agar tidak kena penalti -1 untuk jawaban salah (soal kosong
+        dihitung 0, bukan -1). Peserta tetap bisa memilih jawaban lain lagi lewat
+        PUT /jawaban/{id}.
+      parameters:
+      - description: ID Jawaban
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/backend_internal_helpers.Response'
+            - properties:
+                data:
+                  $ref: '#/definitions/backend_internal_modules_jawaban_dto.JawabanResponse'
+              type: object
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/backend_internal_helpers.Response'
+      security:
+      - BearerAuth: []
+      summary: Kosongkan pilihan jawaban (batalkan jawaban)
+      tags:
+      - Jawaban
+  /jawaban/{id}/restore:
+    patch:
+      parameters:
+      - description: ID Jawaban
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/backend_internal_helpers.Response'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/backend_internal_helpers.Response'
+      security:
+      - BearerAuth: []
+      summary: Pulihkan baris jawaban yang sudah dihapus
+      tags:
+      - Jawaban
+  /jawaban/nilai/{id_nilai}:
+    get:
+      description: Mengembalikan seluruh baris jawaban (termasuk yang masih kosong)
+        untuk satu attempt ujian (id_nilai), terurut sesuai no_urut — dipakai frontend
+        untuk render soal per soal dan navigasi antar soal.
+      parameters:
+      - description: ID Nilai (attempt ujian)
+        in: path
+        name: id_nilai
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/backend_internal_helpers.Response'
+            - properties:
+                data:
+                  items:
+                    $ref: '#/definitions/backend_internal_modules_jawaban_dto.JawabanResponse'
+                  type: array
+              type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/backend_internal_helpers.Response'
+      summary: List jawaban dalam satu attempt ujian
+      tags:
+      - Jawaban
+  /jawaban/peserta/{id_peserta}:
+    get:
+      parameters:
+      - description: ID Peserta
+        in: path
+        name: id_peserta
+        required: true
+        type: string
+      - default: 1
+        description: Nomor halaman
+        in: query
+        name: page
+        type: integer
+      - default: 10
+        description: Jumlah data per halaman
+        in: query
+        name: page_size
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/backend_internal_helpers.Response'
+            - properties:
+                data:
+                  $ref: '#/definitions/backend_internal_modules_jawaban_dto.JawabanListResponse'
+              type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/backend_internal_helpers.Response'
+      summary: List jawaban milik seorang peserta
+      tags:
+      - Jawaban
+  /jurusan:
+    get:
+      parameters:
+      - default: 1
+        description: Nomor halaman
+        in: query
+        name: page
+        type: integer
+      - default: 10
+        description: Jumlah data per halaman
+        in: query
+        name: page_size
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/backend_internal_helpers.Response'
+            - properties:
+                data:
+                  $ref: '#/definitions/backend_internal_modules_jurusan_dto.JurusanListResponse'
+              type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/backend_internal_helpers.Response'
+      summary: List jurusan
+      tags:
+      - Jurusan
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: Data jurusan
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/backend_internal_modules_jurusan_dto.CreateJurusanRequest'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            allOf:
+            - $ref: '#/definitions/backend_internal_helpers.Response'
+            - properties:
+                data:
+                  $ref: '#/definitions/backend_internal_modules_jurusan_dto.JurusanResponse'
+              type: object
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/backend_internal_helpers.Response'
+      security:
+      - BearerAuth: []
+      summary: Buat jurusan baru
+      tags:
+      - Jurusan
+  /jurusan/{id}:
+    delete:
+      parameters:
+      - description: ID Jurusan
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/backend_internal_helpers.Response'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/backend_internal_helpers.Response'
+      security:
+      - BearerAuth: []
+      summary: Hapus (soft delete) jurusan
+      tags:
+      - Jurusan
+    get:
+      parameters:
+      - description: ID Jurusan
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/backend_internal_helpers.Response'
+            - properties:
+                data:
+                  $ref: '#/definitions/backend_internal_modules_jurusan_dto.JurusanResponse'
+              type: object
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/backend_internal_helpers.Response'
+      summary: Detail jurusan
+      tags:
+      - Jurusan
+    put:
+      consumes:
+      - application/json
+      parameters:
+      - description: ID Jurusan
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: Data jurusan
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/backend_internal_modules_jurusan_dto.UpdateJurusanRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/backend_internal_helpers.Response'
+            - properties:
+                data:
+                  $ref: '#/definitions/backend_internal_modules_jurusan_dto.JurusanResponse'
+              type: object
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/backend_internal_helpers.Response'
+      security:
+      - BearerAuth: []
+      summary: Update jurusan
+      tags:
+      - Jurusan
+  /jurusan/{id}/restore:
+    patch:
+      parameters:
+      - description: ID Jurusan
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/backend_internal_helpers.Response'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/backend_internal_helpers.Response'
+      security:
+      - BearerAuth: []
+      summary: Pulihkan jurusan yang sudah dihapus
+      tags:
+      - Jurusan
+  /kelas:
+    get:
+      parameters:
+      - default: 1
+        description: Nomor halaman
+        in: query
+        name: page
+        type: integer
+      - default: 10
+        description: Jumlah data per halaman
+        in: query
+        name: page_size
+        type: integer
+      - description: Filter berdasarkan ID Jurusan
+        in: query
+        name: id_jurusan
+        type: string
+      - description: Filter berdasarkan tingkat
+        in: query
+        name: tingkat
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/backend_internal_helpers.Response'
+            - properties:
+                data:
+                  $ref: '#/definitions/backend_internal_modules_kelas_dto.KelasListResponse'
+              type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/backend_internal_helpers.Response'
+      summary: List kelas
+      tags:
+      - Kelas
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: Data kelas
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/backend_internal_modules_kelas_dto.CreateKelasRequest'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            allOf:
+            - $ref: '#/definitions/backend_internal_helpers.Response'
+            - properties:
+                data:
+                  $ref: '#/definitions/backend_internal_modules_kelas_dto.KelasResponse'
+              type: object
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/backend_internal_helpers.Response'
+      security:
+      - BearerAuth: []
+      summary: Buat kelas baru
+      tags:
+      - Kelas
+  /kelas/{id}:
+    delete:
+      parameters:
+      - description: ID Kelas
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/backend_internal_helpers.Response'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/backend_internal_helpers.Response'
+      security:
+      - BearerAuth: []
+      summary: Hapus (soft delete) kelas
+      tags:
+      - Kelas
+    get:
+      parameters:
+      - description: ID Kelas
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/backend_internal_helpers.Response'
+            - properties:
+                data:
+                  $ref: '#/definitions/backend_internal_modules_kelas_dto.KelasResponse'
+              type: object
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/backend_internal_helpers.Response'
+      summary: Detail kelas
+      tags:
+      - Kelas
+    put:
+      consumes:
+      - application/json
+      parameters:
+      - description: ID Kelas
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: Data kelas
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/backend_internal_modules_kelas_dto.UpdateKelasRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/backend_internal_helpers.Response'
+            - properties:
+                data:
+                  $ref: '#/definitions/backend_internal_modules_kelas_dto.KelasResponse'
+              type: object
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/backend_internal_helpers.Response'
+      security:
+      - BearerAuth: []
+      summary: Update kelas
+      tags:
+      - Kelas
+  /kelas/{id}/restore:
+    patch:
+      parameters:
+      - description: ID Kelas
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/backend_internal_helpers.Response'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/backend_internal_helpers.Response'
+      security:
+      - BearerAuth: []
+      summary: Pulihkan kelas yang sudah dihapus
+      tags:
+      - Kelas
+  /mapel:
+    get:
+      parameters:
+      - default: 1
+        description: Nomor halaman
+        in: query
+        name: page
+        type: integer
+      - default: 10
+        description: Jumlah data per halaman
+        in: query
+        name: page_size
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/backend_internal_helpers.Response'
+            - properties:
+                data:
+                  $ref: '#/definitions/backend_internal_modules_mapel_dto.MapelListResponse'
+              type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/backend_internal_helpers.Response'
+      summary: List mata pelajaran
+      tags:
+      - Mapel
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: Data mapel
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/backend_internal_modules_mapel_dto.CreateMapelRequest'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            allOf:
+            - $ref: '#/definitions/backend_internal_helpers.Response'
+            - properties:
+                data:
+                  $ref: '#/definitions/backend_internal_modules_mapel_dto.MapelResponse'
+              type: object
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/backend_internal_helpers.Response'
+      security:
+      - BearerAuth: []
+      summary: Buat mata pelajaran baru
+      tags:
+      - Mapel
+  /mapel/{id}:
+    delete:
+      parameters:
+      - description: ID Mapel
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/backend_internal_helpers.Response'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/backend_internal_helpers.Response'
+      security:
+      - BearerAuth: []
+      summary: Hapus (soft delete) mata pelajaran
+      tags:
+      - Mapel
+    get:
+      parameters:
+      - description: ID Mapel
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/backend_internal_helpers.Response'
+            - properties:
+                data:
+                  $ref: '#/definitions/backend_internal_modules_mapel_dto.MapelResponse'
+              type: object
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/backend_internal_helpers.Response'
+      summary: Detail mata pelajaran
+      tags:
+      - Mapel
+    put:
+      consumes:
+      - application/json
+      parameters:
+      - description: ID Mapel
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: Data mapel
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/backend_internal_modules_mapel_dto.UpdateMapelRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/backend_internal_helpers.Response'
+            - properties:
+                data:
+                  $ref: '#/definitions/backend_internal_modules_mapel_dto.MapelResponse'
+              type: object
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/backend_internal_helpers.Response'
+      security:
+      - BearerAuth: []
+      summary: Update mata pelajaran
+      tags:
+      - Mapel
+  /mapel/{id}/restore:
+    patch:
+      parameters:
+      - description: ID Mapel
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/backend_internal_helpers.Response'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/backend_internal_helpers.Response'
+      security:
+      - BearerAuth: []
+      summary: Pulihkan mata pelajaran yang sudah dihapus
+      tags:
+      - Mapel
+  /nilai:
+    get:
+      parameters:
+      - default: 1
+        description: Nomor halaman
+        in: query
+        name: page
+        type: integer
+      - default: 10
+        description: Jumlah data per halaman
+        in: query
+        name: page_size
+        type: integer
+      - description: Filter berdasarkan ID Peserta
+        in: query
+        name: id_peserta
+        type: string
+      - description: Filter berdasarkan ID Jadwal
+        in: query
+        name: id_jadwal
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/backend_internal_helpers.Response'
+            - properties:
+                data:
+                  $ref: '#/definitions/backend_internal_modules_nilai_dto.NilaiListResponse'
+              type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/backend_internal_helpers.Response'
+      summary: List nilai/attempt ujian
+      tags:
+      - Nilai
+    post:
+      consumes:
+      - application/json
+      description: Umumnya nilai/attempt ujian dibuat otomatis lewat POST /nilai/mulai-ujian/{id_jadwal}.
+        Endpoint ini untuk input manual oleh admin/guru.
+      parameters:
+      - description: Data nilai
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/backend_internal_modules_nilai_dto.CreateNilaiRequest'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            allOf:
+            - $ref: '#/definitions/backend_internal_helpers.Response'
+            - properties:
+                data:
+                  $ref: '#/definitions/backend_internal_modules_nilai_dto.NilaiResponse'
+              type: object
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/backend_internal_helpers.Response'
+      security:
+      - BearerAuth: []
+      summary: Buat data nilai secara manual
+      tags:
+      - Nilai
+  /nilai/{id}:
+    delete:
+      parameters:
+      - description: ID Nilai
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/backend_internal_helpers.Response'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/backend_internal_helpers.Response'
+      security:
+      - BearerAuth: []
+      summary: Hapus (soft delete) data nilai
+      tags:
+      - Nilai
+    get:
+      parameters:
+      - description: ID Nilai
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/backend_internal_helpers.Response'
+            - properties:
+                data:
+                  $ref: '#/definitions/backend_internal_modules_nilai_dto.NilaiResponse'
+              type: object
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/backend_internal_helpers.Response'
+      summary: Detail nilai/attempt ujian
+      tags:
+      - Nilai
+    put:
+      consumes:
+      - application/json
+      parameters:
+      - description: ID Nilai
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: Data nilai
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/backend_internal_modules_nilai_dto.UpdateNilaiRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/backend_internal_helpers.Response'
+            - properties:
+                data:
+                  $ref: '#/definitions/backend_internal_modules_nilai_dto.NilaiResponse'
+              type: object
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/backend_internal_helpers.Response'
+      security:
+      - BearerAuth: []
+      summary: Update data nilai
+      tags:
+      - Nilai
+  /nilai/{id}/restore:
+    patch:
+      parameters:
+      - description: ID Nilai
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/backend_internal_helpers.Response'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/backend_internal_helpers.Response'
+      security:
+      - BearerAuth: []
+      summary: Pulihkan data nilai yang sudah dihapus
+      tags:
+      - Nilai
+  /nilai/export/{id_jadwal}:
+    get:
+      description: Menghasilkan file ZIP berisi rekap nilai seluruh peserta untuk
+        satu jadwal ujian. Response bukan JSON, melainkan file binary (Content-Type
+        application/zip) yang langsung ter-download.
+      parameters:
+      - description: ID Jadwal
+        in: path
+        name: id_jadwal
+        required: true
+        type: string
+      produces:
+      - application/zip
+      responses:
+        "200":
+          description: File ZIP hasil export
+          schema:
+            type: file
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/backend_internal_helpers.Response'
+      security:
+      - BearerAuth: []
+      summary: Export nilai satu jadwal ujian ke file (ZIP)
+      tags:
+      - Nilai
+  /nilai/jadwal/{id_jadwal}:
+    get:
+      parameters:
+      - description: ID Jadwal
+        in: path
+        name: id_jadwal
+        required: true
+        type: string
+      - default: 1
+        description: Nomor halaman
+        in: query
+        name: page
+        type: integer
+      - default: 10
+        description: Jumlah data per halaman
+        in: query
+        name: page_size
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/backend_internal_helpers.Response'
+            - properties:
+                data:
+                  $ref: '#/definitions/backend_internal_modules_nilai_dto.NilaiListResponse'
+              type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/backend_internal_helpers.Response'
+      summary: List nilai seluruh peserta untuk satu jadwal ujian
+      tags:
+      - Nilai
+  /nilai/mulai-ujian/{id_jadwal}:
+    post:
+      description: Dipanggil peserta saat membuka ujian. Jika belum ada attempt, membuat
+        data nilai baru + baris jawaban kosong untuk tiap soal (status 201). Jika
+        attempt sudah ada dan belum selesai, mengembalikan data attempt yang sama
+        untuk dilanjutkan (status 200). Mengembalikan error jika ujian untuk jadwal
+        ini sudah pernah diselesaikan. id_peserta diambil dari token JWT peserta yang
+        login.
+      parameters:
+      - description: ID Jadwal
+        in: path
+        name: id_jadwal
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Melanjutkan ujian yang sudah berjalan
+          schema:
+            allOf:
+            - $ref: '#/definitions/backend_internal_helpers.Response'
+            - properties:
+                data:
+                  $ref: '#/definitions/backend_internal_modules_nilai_dto.NilaiResponse'
+              type: object
+        "201":
+          description: Ujian baru dimulai
+          schema:
+            allOf:
+            - $ref: '#/definitions/backend_internal_helpers.Response'
+            - properties:
+                data:
+                  $ref: '#/definitions/backend_internal_modules_nilai_dto.NilaiResponse'
+              type: object
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/backend_internal_helpers.Response'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/backend_internal_helpers.Response'
+      security:
+      - BearerAuth: []
+      summary: Mulai atau lanjutkan ujian
+      tags:
+      - Nilai
+  /nilai/peserta/{id_peserta}:
+    get:
+      parameters:
+      - description: ID Peserta
+        in: path
+        name: id_peserta
+        required: true
+        type: string
+      - default: 1
+        description: Nomor halaman
+        in: query
+        name: page
+        type: integer
+      - default: 10
+        description: Jumlah data per halaman
+        in: query
+        name: page_size
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/backend_internal_helpers.Response'
+            - properties:
+                data:
+                  $ref: '#/definitions/backend_internal_modules_nilai_dto.NilaiListResponse'
+              type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/backend_internal_helpers.Response'
+      summary: List riwayat nilai seorang peserta
+      tags:
+      - Nilai
+  /peserta:
+    get:
+      parameters:
+      - default: 1
+        description: Nomor halaman
+        in: query
+        name: page
+        type: integer
+      - default: 10
+        description: Jumlah data per halaman
+        in: query
+        name: page_size
+        type: integer
+      - description: Filter berdasarkan ID Kelas
+        in: query
+        name: id_kelas
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/backend_internal_helpers.Response'
+            - properties:
+                data:
+                  $ref: '#/definitions/backend_internal_modules_peserta_dto.PesertaListResponse'
+              type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/backend_internal_helpers.Response'
+      summary: List peserta
+      tags:
+      - Peserta
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: Data peserta
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/backend_internal_modules_peserta_dto.CreatePesertaRequest'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            allOf:
+            - $ref: '#/definitions/backend_internal_helpers.Response'
+            - properties:
+                data:
+                  $ref: '#/definitions/backend_internal_modules_peserta_dto.PesertaResponse'
+              type: object
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/backend_internal_helpers.Response'
+      security:
+      - BearerAuth: []
+      summary: Buat akun peserta baru
+      tags:
+      - Peserta
+  /peserta/{id}:
+    delete:
+      parameters:
+      - description: ID Peserta
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/backend_internal_helpers.Response'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/backend_internal_helpers.Response'
+      security:
+      - BearerAuth: []
+      summary: Hapus (soft delete) peserta
+      tags:
+      - Peserta
+    get:
+      parameters:
+      - description: ID Peserta
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/backend_internal_helpers.Response'
+            - properties:
+                data:
+                  $ref: '#/definitions/backend_internal_modules_peserta_dto.PesertaResponse'
+              type: object
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/backend_internal_helpers.Response'
+      summary: Detail peserta
+      tags:
+      - Peserta
+    put:
+      consumes:
+      - application/json
+      parameters:
+      - description: ID Peserta
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: Data peserta
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/backend_internal_modules_peserta_dto.UpdatePesertaRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/backend_internal_helpers.Response'
+            - properties:
+                data:
+                  $ref: '#/definitions/backend_internal_modules_peserta_dto.PesertaResponse'
+              type: object
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/backend_internal_helpers.Response'
+      security:
+      - BearerAuth: []
+      summary: Update data peserta
+      tags:
+      - Peserta
+  /peserta/{id}/restore:
+    patch:
+      parameters:
+      - description: ID Peserta
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/backend_internal_helpers.Response'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/backend_internal_helpers.Response'
+      security:
+      - BearerAuth: []
+      summary: Pulihkan peserta yang sudah dihapus
+      tags:
+      - Peserta
+  /soal:
+    get:
+      parameters:
+      - default: 1
+        description: Nomor halaman
+        in: query
+        name: page
+        type: integer
+      - default: 10
+        description: Jumlah data per halaman
+        in: query
+        name: page_size
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/backend_internal_helpers.Response'
+            - properties:
+                data:
+                  $ref: '#/definitions/backend_internal_modules_soal_dto.SoalListResponse'
+              type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/backend_internal_helpers.Response'
+      summary: List soal
+      tags:
+      - Soal
+    post:
+      consumes:
+      - multipart/form-data
+      description: Form-data (bukan JSON) karena mendukung upload gambar untuk soal
+        maupun tiap opsi jawaban.
+      parameters:
+      - description: ID Bank Soal
+        in: formData
+        name: id_bank_soal
+        required: true
+        type: string
+      - description: Nomor urut soal
+        in: formData
+        name: no_soal
+        type: integer
+      - description: Teks soal
+        in: formData
+        name: soal
+        type: string
+      - description: Gambar soal
+        in: formData
+        name: gambar_soal
+        type: file
+      - description: Teks opsi A
+        in: formData
+        name: opsi_a
+        type: string
+      - description: Teks opsi B
+        in: formData
+        name: opsi_b
+        type: string
+      - description: Teks opsi C
+        in: formData
+        name: opsi_c
+        type: string
+      - description: Teks opsi D
+        in: formData
+        name: opsi_d
+        type: string
+      - description: Teks opsi E
+        in: formData
+        name: opsi_e
+        type: string
+      - description: Gambar opsi A
+        in: formData
+        name: gambar_a
+        type: file
+      - description: Gambar opsi B
+        in: formData
+        name: gambar_b
+        type: file
+      - description: Gambar opsi C
+        in: formData
+        name: gambar_c
+        type: file
+      - description: Gambar opsi D
+        in: formData
+        name: gambar_d
+        type: file
+      - description: Gambar opsi E
+        in: formData
+        name: gambar_e
+        type: file
+      - description: Kunci jawaban (A/B/C/D/E)
+        in: formData
+        name: kunci
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            allOf:
+            - $ref: '#/definitions/backend_internal_helpers.Response'
+            - properties:
+                data:
+                  $ref: '#/definitions/backend_internal_modules_soal_dto.SoalResponse'
+              type: object
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/backend_internal_helpers.Response'
+      security:
+      - BearerAuth: []
+      summary: Buat soal baru
+      tags:
+      - Soal
+  /soal/{id}:
+    delete:
+      parameters:
+      - description: ID Soal
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/backend_internal_helpers.Response'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/backend_internal_helpers.Response'
+      security:
+      - BearerAuth: []
+      summary: Hapus (soft delete) soal
+      tags:
+      - Soal
+    get:
+      description: Jika request membawa token JWT peserta yang sedang ujian dan jadwalnya
+        diset acak_opsi=1, urutan opsi jawaban akan diacak secara konsisten untuk
+        peserta tersebut (bukan diambil dari urutan asli di database).
+      parameters:
+      - description: ID Soal
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/backend_internal_helpers.Response'
+            - properties:
+                data:
+                  $ref: '#/definitions/backend_internal_modules_soal_dto.SoalResponse'
+              type: object
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/backend_internal_helpers.Response'
+      summary: Detail soal
+      tags:
+      - Soal
+    put:
+      consumes:
+      - multipart/form-data
+      description: Form-data (bukan JSON) karena mendukung upload gambar untuk soal
+        maupun tiap opsi jawaban.
+      parameters:
+      - description: ID Soal
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: Nomor urut soal
+        in: formData
+        name: no_soal
+        type: integer
+      - description: Teks soal
+        in: formData
+        name: soal
+        type: string
+      - description: Gambar soal
+        in: formData
+        name: gambar_soal
+        type: file
+      - description: Teks opsi A
+        in: formData
+        name: opsi_a
+        type: string
+      - description: Teks opsi B
+        in: formData
+        name: opsi_b
+        type: string
+      - description: Teks opsi C
+        in: formData
+        name: opsi_c
+        type: string
+      - description: Teks opsi D
+        in: formData
+        name: opsi_d
+        type: string
+      - description: Teks opsi E
+        in: formData
+        name: opsi_e
+        type: string
+      - description: Gambar opsi A
+        in: formData
+        name: gambar_a
+        type: file
+      - description: Gambar opsi B
+        in: formData
+        name: gambar_b
+        type: file
+      - description: Gambar opsi C
+        in: formData
+        name: gambar_c
+        type: file
+      - description: Gambar opsi D
+        in: formData
+        name: gambar_d
+        type: file
+      - description: Gambar opsi E
+        in: formData
+        name: gambar_e
+        type: file
+      - description: Kunci jawaban (A/B/C/D/E)
+        in: formData
+        name: kunci
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/backend_internal_helpers.Response'
+            - properties:
+                data:
+                  $ref: '#/definitions/backend_internal_modules_soal_dto.SoalResponse'
+              type: object
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/backend_internal_helpers.Response'
+      security:
+      - BearerAuth: []
+      summary: Update soal
+      tags:
+      - Soal
+  /soal/{id}/restore:
+    patch:
+      parameters:
+      - description: ID Soal
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/backend_internal_helpers.Response'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/backend_internal_helpers.Response'
+      security:
+      - BearerAuth: []
+      summary: Pulihkan soal yang sudah dihapus
+      tags:
+      - Soal
+  /soal/bank/{bank_soal_id}:
+    get:
+      parameters:
+      - description: ID Bank Soal
+        in: path
+        name: bank_soal_id
+        required: true
+        type: string
+      - default: 1
+        description: Nomor halaman
+        in: query
+        name: page
+        type: integer
+      - default: 10
+        description: Jumlah data per halaman
+        in: query
+        name: page_size
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/backend_internal_helpers.Response'
+            - properties:
+                data:
+                  $ref: '#/definitions/backend_internal_modules_soal_dto.SoalListResponse'
+              type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/backend_internal_helpers.Response'
+      summary: List soal berdasarkan bank soal
+      tags:
+      - Soal
+  /soal/import:
+    post:
+      consumes:
+      - multipart/form-data
+      description: Upload file .xls/.xlsx (maks 10MB) berisi banyak soal sekaligus
+        untuk satu bank soal. Response berisi ringkasan jumlah berhasil/gagal beserta
+        detail error per baris.
+      parameters:
+      - description: ID Bank Soal
+        in: formData
+        name: id_bank_soal
+        required: true
+        type: string
+      - description: File Excel (.xls/.xlsx, maks 10MB)
+        in: formData
+        name: file
+        required: true
+        type: file
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/backend_internal_helpers.Response'
+            - properties:
+                data:
+                  $ref: '#/definitions/backend_internal_modules_soal_dto.ImportSoalResponse'
+              type: object
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/backend_internal_helpers.Response'
+      security:
+      - BearerAuth: []
+      summary: Import soal massal dari file Excel
+      tags:
+      - Soal
+  /users:
+    get:
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/backend_internal_helpers.Response'
+            - properties:
+                data:
+                  items:
+                    $ref: '#/definitions/backend_internal_modules_user_dto.UserResponse'
+                  type: array
+              type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/backend_internal_helpers.Response'
+      summary: List user
+      tags:
+      - Users
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: Data user
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/backend_internal_modules_user_dto.CreateUserRequest'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            allOf:
+            - $ref: '#/definitions/backend_internal_helpers.Response'
+            - properties:
+                data:
+                  $ref: '#/definitions/backend_internal_modules_user_dto.UserResponse'
+              type: object
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/backend_internal_helpers.Response'
+      security:
+      - BearerAuth: []
+      summary: Buat user baru (guru/admin)
+      tags:
+      - Users
+  /users/{id}:
+    delete:
+      parameters:
+      - description: ID User
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/backend_internal_helpers.Response'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/backend_internal_helpers.Response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/backend_internal_helpers.Response'
+      security:
+      - BearerAuth: []
+      summary: Hapus user
+      tags:
+      - Users
+    get:
+      parameters:
+      - description: ID User
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/backend_internal_helpers.Response'
+            - properties:
+                data:
+                  $ref: '#/definitions/backend_internal_modules_user_dto.UserResponse'
+              type: object
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/backend_internal_helpers.Response'
+      summary: Detail user
+      tags:
+      - Users
+    put:
+      consumes:
+      - application/json
+      parameters:
+      - description: ID User
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: Data user
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/backend_internal_modules_user_dto.UpdateUserRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/backend_internal_helpers.Response'
+            - properties:
+                data:
+                  $ref: '#/definitions/backend_internal_modules_user_dto.UserResponse'
+              type: object
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/backend_internal_helpers.Response'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/backend_internal_helpers.Response'
+      security:
+      - BearerAuth: []
+      summary: Update user
+      tags:
+      - Users
+securityDefinitions:
+  BearerAuth:
+    description: 'Ketik "Bearer" diikuti spasi dan JWT token. Contoh: "Bearer eyJhbGciOi..."'
+    in: header
+    name: Authorization
+    type: apiKey
+swagger: "2.0"

@@ -23,6 +23,7 @@ type JawabanService interface {
 	GetJawabanByNilai(idNilai string) ([]dto.JawabanResponse, error)
 	GetJawabanByPeserta(idPeserta string, page, pageSize int) (*dto.JawabanListResponse, error)
 	UpdateJawaban(id string, req *dto.UpdateJawabanRequest) (*dto.JawabanResponse, error)
+	ClearJawaban(id string) (*dto.JawabanResponse, error)
 	DeleteJawaban(id string) error
 	RestoreJawaban(id string) error
 }
@@ -258,6 +259,29 @@ func (s *jawabanService) UpdateJawaban(id string, req *dto.UpdateJawabanRequest)
 		return nil, err
 	}
 	return detailToResponse(updated), nil
+}
+
+func (s *jawabanService) ClearJawaban(id string) (*dto.JawabanResponse, error) {
+	existing, err := s.repo.GetByID(id)
+	if err != nil {
+		if errors.Is(err, gorm.ErrRecordNotFound) {
+			return nil, errors.New(constants.ErrNotFound)
+		}
+		return nil, err
+	}
+
+	existing.Jawaban = nil
+	existing.IsBenar = nil
+
+	if err := s.repo.Update(existing); err != nil {
+		return nil, err
+	}
+
+	cleared, err := s.repo.GetByIDWithDetail(id)
+	if err != nil {
+		return nil, err
+	}
+	return detailToResponse(cleared), nil
 }
 
 func (s *jawabanService) DeleteJawaban(id string) error {

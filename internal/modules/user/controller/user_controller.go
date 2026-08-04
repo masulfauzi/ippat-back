@@ -17,6 +17,16 @@ func NewUserController(service service.UserService) *UserController {
 	return &UserController{service: service}
 }
 
+// Create godoc
+// @Summary      Buat user baru (guru/admin)
+// @Tags         Users
+// @Accept       json
+// @Produce      json
+// @Param        body  body      dto.CreateUserRequest  true  "Data user"
+// @Success      201   {object}  helpers.Response{data=dto.UserResponse}
+// @Failure      400   {object}  helpers.Response
+// @Security     BearerAuth
+// @Router       /users [post]
 func (c *UserController) Create(ctx *fiber.Ctx) error {
 	var req dto.CreateUserRequest
 
@@ -36,6 +46,13 @@ func (c *UserController) Create(ctx *fiber.Ctx) error {
 	return helpers.SuccessResponse(ctx, fiber.StatusCreated, "User created successfully", resp)
 }
 
+// GetAll godoc
+// @Summary      List user
+// @Tags         Users
+// @Produce      json
+// @Success      200  {object}  helpers.Response{data=[]dto.UserResponse}
+// @Failure      500  {object}  helpers.Response
+// @Router       /users [get]
 func (c *UserController) GetAll(ctx *fiber.Ctx) error {
 	users, err := c.service.GetAll()
 	if err != nil {
@@ -45,6 +62,14 @@ func (c *UserController) GetAll(ctx *fiber.Ctx) error {
 	return helpers.SuccessResponse(ctx, fiber.StatusOK, "Get all users successfully", users)
 }
 
+// GetByID godoc
+// @Summary      Detail user
+// @Tags         Users
+// @Produce      json
+// @Param        id   path      string  true  "ID User"
+// @Success      200  {object}  helpers.Response{data=dto.UserResponse}
+// @Failure      404  {object}  helpers.Response
+// @Router       /users/{id} [get]
 func (c *UserController) GetByID(ctx *fiber.Ctx) error {
 	id := ctx.Params("id")
 
@@ -56,6 +81,18 @@ func (c *UserController) GetByID(ctx *fiber.Ctx) error {
 	return helpers.SuccessResponse(ctx, fiber.StatusOK, "Get user successfully", user)
 }
 
+// Update godoc
+// @Summary      Update user
+// @Tags         Users
+// @Accept       json
+// @Produce      json
+// @Param        id    path      string                 true  "ID User"
+// @Param        body  body      dto.UpdateUserRequest  true  "Data user"
+// @Success      200   {object}  helpers.Response{data=dto.UserResponse}
+// @Failure      400   {object}  helpers.Response
+// @Failure      404   {object}  helpers.Response
+// @Security     BearerAuth
+// @Router       /users/{id} [put]
 func (c *UserController) Update(ctx *fiber.Ctx) error {
 	id := ctx.Params("id")
 
@@ -79,6 +116,16 @@ func (c *UserController) Update(ctx *fiber.Ctx) error {
 	return helpers.SuccessResponse(ctx, fiber.StatusOK, "User updated successfully", user)
 }
 
+// Delete godoc
+// @Summary      Hapus user
+// @Tags         Users
+// @Produce      json
+// @Param        id   path      string  true  "ID User"
+// @Success      200  {object}  helpers.Response
+// @Failure      404  {object}  helpers.Response
+// @Failure      500  {object}  helpers.Response
+// @Security     BearerAuth
+// @Router       /users/{id} [delete]
 func (c *UserController) Delete(ctx *fiber.Ctx) error {
 	id := ctx.Params("id")
 

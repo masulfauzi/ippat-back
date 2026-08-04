@@ -18,6 +18,16 @@ func NewMapelController(service service.MapelService) *MapelController {
 	return &MapelController{service: service}
 }
 
+// CreateMapel godoc
+// @Summary      Buat mata pelajaran baru
+// @Tags         Mapel
+// @Accept       json
+// @Produce      json
+// @Param        body  body      dto.CreateMapelRequest  true  "Data mapel"
+// @Success      201   {object}  helpers.Response{data=dto.MapelResponse}
+// @Failure      400   {object}  helpers.Response
+// @Security     BearerAuth
+// @Router       /mapel [post]
 func (c *MapelController) CreateMapel(ctx *fiber.Ctx) error {
 	var req dto.CreateMapelRequest
 
@@ -33,6 +43,15 @@ func (c *MapelController) CreateMapel(ctx *fiber.Ctx) error {
 	return helpers.SuccessResponse(ctx, fiber.StatusCreated, "Create mapel successfully", resp)
 }
 
+// GetAllMapel godoc
+// @Summary      List mata pelajaran
+// @Tags         Mapel
+// @Produce      json
+// @Param        page       query     int  false  "Nomor halaman"          default(1)
+// @Param        page_size  query     int  false  "Jumlah data per halaman" default(10)
+// @Success      200        {object}  helpers.Response{data=dto.MapelListResponse}
+// @Failure      500        {object}  helpers.Response
+// @Router       /mapel [get]
 func (c *MapelController) GetAllMapel(ctx *fiber.Ctx) error {
 	page := ctx.Query("page", "1")
 	pageSize := ctx.Query("page_size", "10")
@@ -55,6 +74,14 @@ func (c *MapelController) GetAllMapel(ctx *fiber.Ctx) error {
 	return helpers.SuccessResponse(ctx, fiber.StatusOK, "Get all mapel successfully", resp)
 }
 
+// GetMapelByID godoc
+// @Summary      Detail mata pelajaran
+// @Tags         Mapel
+// @Produce      json
+// @Param        id   path      string  true  "ID Mapel"
+// @Success      200  {object}  helpers.Response{data=dto.MapelResponse}
+// @Failure      404  {object}  helpers.Response
+// @Router       /mapel/{id} [get]
 func (c *MapelController) GetMapelByID(ctx *fiber.Ctx) error {
 	id := ctx.Params("id")
 
@@ -66,6 +93,17 @@ func (c *MapelController) GetMapelByID(ctx *fiber.Ctx) error {
 	return helpers.SuccessResponse(ctx, fiber.StatusOK, "Get mapel successfully", resp)
 }
 
+// UpdateMapel godoc
+// @Summary      Update mata pelajaran
+// @Tags         Mapel
+// @Accept       json
+// @Produce      json
+// @Param        id    path      string                  true  "ID Mapel"
+// @Param        body  body      dto.UpdateMapelRequest  true  "Data mapel"
+// @Success      200   {object}  helpers.Response{data=dto.MapelResponse}
+// @Failure      400   {object}  helpers.Response
+// @Security     BearerAuth
+// @Router       /mapel/{id} [put]
 func (c *MapelController) UpdateMapel(ctx *fiber.Ctx) error {
 	id := ctx.Params("id")
 	var req dto.UpdateMapelRequest
@@ -82,6 +120,15 @@ func (c *MapelController) UpdateMapel(ctx *fiber.Ctx) error {
 	return helpers.SuccessResponse(ctx, fiber.StatusOK, "Update mapel successfully", resp)
 }
 
+// DeleteMapel godoc
+// @Summary      Hapus (soft delete) mata pelajaran
+// @Tags         Mapel
+// @Produce      json
+// @Param        id   path      string  true  "ID Mapel"
+// @Success      200  {object}  helpers.Response
+// @Failure      400  {object}  helpers.Response
+// @Security     BearerAuth
+// @Router       /mapel/{id} [delete]
 func (c *MapelController) DeleteMapel(ctx *fiber.Ctx) error {
 	id := ctx.Params("id")
 
@@ -93,6 +140,15 @@ func (c *MapelController) DeleteMapel(ctx *fiber.Ctx) error {
 	return helpers.SuccessResponse(ctx, fiber.StatusOK, "Delete mapel successfully", nil)
 }
 
+// RestoreMapel godoc
+// @Summary      Pulihkan mata pelajaran yang sudah dihapus
+// @Tags         Mapel
+// @Produce      json
+// @Param        id   path      string  true  "ID Mapel"
+// @Success      200  {object}  helpers.Response
+// @Failure      400  {object}  helpers.Response
+// @Security     BearerAuth
+// @Router       /mapel/{id}/restore [patch]
 func (c *MapelController) RestoreMapel(ctx *fiber.Ctx) error {
 	id := ctx.Params("id")
 

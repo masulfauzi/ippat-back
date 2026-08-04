@@ -19,6 +19,16 @@ func NewJadwalController(service service.JadwalService) *JadwalController {
 	return &JadwalController{service: service}
 }
 
+// CreateJadwal godoc
+// @Summary      Buat jadwal ujian baru
+// @Tags         Jadwal
+// @Accept       json
+// @Produce      json
+// @Param        body  body      dto.CreateJadwalRequest  true  "Data jadwal"
+// @Success      201   {object}  helpers.Response{data=dto.JadwalResponse}
+// @Failure      400   {object}  helpers.Response
+// @Security     BearerAuth
+// @Router       /jadwal [post]
 func (c *JadwalController) CreateJadwal(ctx *fiber.Ctx) error {
 	var req dto.CreateJadwalRequest
 
@@ -34,6 +44,15 @@ func (c *JadwalController) CreateJadwal(ctx *fiber.Ctx) error {
 	return helpers.SuccessResponse(ctx, fiber.StatusCreated, "Create jadwal successfully", resp)
 }
 
+// GetAllJadwal godoc
+// @Summary      List jadwal ujian
+// @Tags         Jadwal
+// @Produce      json
+// @Param        page       query     int  false  "Nomor halaman"          default(1)
+// @Param        page_size  query     int  false  "Jumlah data per halaman" default(10)
+// @Success      200        {object}  helpers.Response{data=dto.JadwalListResponse}
+// @Failure      500        {object}  helpers.Response
+// @Router       /jadwal [get]
 func (c *JadwalController) GetAllJadwal(ctx *fiber.Ctx) error {
 	page := ctx.Query("page", "1")
 	pageSize := ctx.Query("page_size", "10")
@@ -56,6 +75,16 @@ func (c *JadwalController) GetAllJadwal(ctx *fiber.Ctx) error {
 	return helpers.SuccessResponse(ctx, fiber.StatusOK, "Get all jadwal successfully", resp)
 }
 
+// GetJadwalByBankSoal godoc
+// @Summary      List jadwal berdasarkan bank soal
+// @Tags         Jadwal
+// @Produce      json
+// @Param        bank_soal_id  path      string  true   "ID Bank Soal"
+// @Param        page          query     int     false  "Nomor halaman"          default(1)
+// @Param        page_size     query     int     false  "Jumlah data per halaman" default(10)
+// @Success      200           {object}  helpers.Response{data=dto.JadwalListResponse}
+// @Failure      500           {object}  helpers.Response
+// @Router       /jadwal/bank-soal/{bank_soal_id} [get]
 func (c *JadwalController) GetJadwalByBankSoal(ctx *fiber.Ctx) error {
 	bankSoalID := ctx.Params("bank_soal_id")
 	page := ctx.Query("page", "1")
@@ -79,6 +108,14 @@ func (c *JadwalController) GetJadwalByBankSoal(ctx *fiber.Ctx) error {
 	return helpers.SuccessResponse(ctx, fiber.StatusOK, "Get jadwal by bank soal successfully", resp)
 }
 
+// GetJadwalByID godoc
+// @Summary      Detail jadwal ujian
+// @Tags         Jadwal
+// @Produce      json
+// @Param        id   path      string  true  "ID Jadwal"
+// @Success      200  {object}  helpers.Response{data=dto.JadwalResponse}
+// @Failure      404  {object}  helpers.Response
+// @Router       /jadwal/{id} [get]
 func (c *JadwalController) GetJadwalByID(ctx *fiber.Ctx) error {
 	id := ctx.Params("id")
 
@@ -90,6 +127,17 @@ func (c *JadwalController) GetJadwalByID(ctx *fiber.Ctx) error {
 	return helpers.SuccessResponse(ctx, fiber.StatusOK, "Get jadwal successfully", resp)
 }
 
+// UpdateJadwal godoc
+// @Summary      Update jadwal ujian
+// @Tags         Jadwal
+// @Accept       json
+// @Produce      json
+// @Param        id    path      string                   true  "ID Jadwal"
+// @Param        body  body      dto.UpdateJadwalRequest  true  "Data jadwal"
+// @Success      200   {object}  helpers.Response{data=dto.JadwalResponse}
+// @Failure      400   {object}  helpers.Response
+// @Security     BearerAuth
+// @Router       /jadwal/{id} [put]
 func (c *JadwalController) UpdateJadwal(ctx *fiber.Ctx) error {
 	id := ctx.Params("id")
 	var req dto.UpdateJadwalRequest
@@ -106,6 +154,15 @@ func (c *JadwalController) UpdateJadwal(ctx *fiber.Ctx) error {
 	return helpers.SuccessResponse(ctx, fiber.StatusOK, "Update jadwal successfully", resp)
 }
 
+// DeleteJadwal godoc
+// @Summary      Hapus (soft delete) jadwal ujian
+// @Tags         Jadwal
+// @Produce      json
+// @Param        id   path      string  true  "ID Jadwal"
+// @Success      200  {object}  helpers.Response
+// @Failure      400  {object}  helpers.Response
+// @Security     BearerAuth
+// @Router       /jadwal/{id} [delete]
 func (c *JadwalController) DeleteJadwal(ctx *fiber.Ctx) error {
 	id := ctx.Params("id")
 
@@ -117,6 +174,15 @@ func (c *JadwalController) DeleteJadwal(ctx *fiber.Ctx) error {
 	return helpers.SuccessResponse(ctx, fiber.StatusOK, "Delete jadwal successfully", nil)
 }
 
+// RestoreJadwal godoc
+// @Summary      Pulihkan jadwal yang sudah dihapus
+// @Tags         Jadwal
+// @Produce      json
+// @Param        id   path      string  true  "ID Jadwal"
+// @Success      200  {object}  helpers.Response
+// @Failure      400  {object}  helpers.Response
+// @Security     BearerAuth
+// @Router       /jadwal/{id}/restore [patch]
 func (c *JadwalController) RestoreJadwal(ctx *fiber.Ctx) error {
 	id := ctx.Params("id")
 
@@ -128,6 +194,16 @@ func (c *JadwalController) RestoreJadwal(ctx *fiber.Ctx) error {
 	return helpers.SuccessResponse(ctx, fiber.StatusOK, "Restore jadwal successfully", nil)
 }
 
+// GetJadwalAktifHariIni godoc
+// @Summary      Jadwal ujian aktif hari ini untuk peserta yang login
+// @Description  Mengambil daftar jadwal ujian yang berlangsung hari ini untuk kelas peserta yang sedang login, lengkap dengan status pengerjaannya (belum mulai/sedang ujian/selesai).
+// @Tags         Jadwal
+// @Produce      json
+// @Success      200  {object}  helpers.Response{data=[]dto.JadwalAktifResponse}
+// @Failure      401  {object}  helpers.Response
+// @Failure      500  {object}  helpers.Response
+// @Security     BearerAuth
+// @Router       /jadwal/aktif/hari-ini [get]
 func (c *JadwalController) GetJadwalAktifHariIni(ctx *fiber.Ctx) error {
 	token, ok := ctx.Locals("user").(*jwt.Token)
 	if !ok {
