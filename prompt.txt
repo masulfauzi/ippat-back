@@ -1,0 +1,16 @@
+buatkan issue.md yang berisi perencanaan untuk nanti diimplementasikan oleh junior programmer atau AI model yang lebih murah.
+
+isi dari perencanaannya adalah sebagai berikut:
+
+buatkan saya endpoint baru untuk melakukan export nilai.
+data yang dikirim adalah id_jadwal yang merupakan kolom id pada tabel jadwal.
+dari id tersebut, carilah semua nilai yang terdapat pada tabel nilai dengan filter whre id_jadwal = id.
+cek juga id_kelas yang ada pada tabel jadwal_kelas dengan filter where id_jadwal = id.
+jika semua data sudah lengkap buat file excel dari tabel nilai berdasarkan id_kelas yang ada.
+misal dalam id yang dikiri ada 10 kelas, maka buat 10 file excel, kemudian jadikan dalam 1 file zip yang bisa di download.
+
+buatkan juga dokumentasinya agar mudah dalam impleentasi di frontend.
+
+
+jelaskan tahapan yang harus dilakukan untuk mengimplementasikan fitur ini.
+anggap nanti yang akan mengimplementasikan ini adalah junior programmer atau AI model yang lebih murah.
