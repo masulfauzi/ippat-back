@@ -11,19 +11,20 @@ import (
 	_ "backend/docs"
 	"backend/internal/database"
 	"backend/internal/middleware"
-	"backend/internal/storage"
 	authroutes "backend/internal/modules/auth/routes"
 	banksoalroutes "backend/internal/modules/bank_soal/routes"
 	jadwalroutes "backend/internal/modules/jadwal/routes"
 	jadwalkelasroutes "backend/internal/modules/jadwal_kelas/routes"
 	jawabanroutes "backend/internal/modules/jawaban/routes"
-	nilairoutes "backend/internal/modules/nilai/routes"
 	jurusanroutes "backend/internal/modules/jurusan/routes"
+	kategorisoalroutes "backend/internal/modules/kategori_soal/routes"
 	kelasroutes "backend/internal/modules/kelas/routes"
 	mapelroutes "backend/internal/modules/mapel/routes"
+	nilairoutes "backend/internal/modules/nilai/routes"
 	pesertaroutes "backend/internal/modules/peserta/routes"
 	soalroutes "backend/internal/modules/soal/routes"
 	userroutes "backend/internal/modules/user/routes"
+	"backend/internal/storage"
 
 	"github.com/gofiber/fiber/v2"
 	fiberswagger "github.com/swaggo/fiber-swagger"
@@ -92,9 +93,9 @@ func main() {
 func setupRoutes(app *fiber.App, appConfig *configs.AppConfig) {
 	app.Get("/health", func(ctx *fiber.Ctx) error {
 		return ctx.JSON(fiber.Map{
-			"status":     "ok",
-			"service":    "Fiber Backend API",
-			"server-no":  appConfig.ServerNo,
+			"status":    "ok",
+			"service":   "Fiber Backend API",
+			"server-no": appConfig.ServerNo,
 		})
 	})
 
@@ -108,6 +109,7 @@ func setupRoutes(app *fiber.App, appConfig *configs.AppConfig) {
 	banksoalroutes.SetupBankSoalRoutes(app, database.DB)
 	soalroutes.SetupSoalRoutes(app, database.DB)
 	jurusanroutes.SetupJurusanRoutes(app, database.DB)
+	kategorisoalroutes.SetupKategoriSoalRoutes(app, database.DB)
 	kelasroutes.SetupKelasRoutes(app, database.DB)
 	jadwalroutes.SetupJadwalRoutes(app, database.DB)
 	jadwalkelasroutes.SetupJadwalKelasRoutes(app, database.DB)

@@ -1,17 +1,18 @@
 package database
 
 import (
-	banksoalmodel    "backend/internal/modules/bank_soal/model"
-	jadwalmodel      "backend/internal/modules/jadwal/model"
+	banksoalmodel "backend/internal/modules/bank_soal/model"
+	jadwalmodel "backend/internal/modules/jadwal/model"
 	jadwalkelasmodel "backend/internal/modules/jadwal_kelas/model"
-	jawabanmodel     "backend/internal/modules/jawaban/model"
-	jurusanmodel     "backend/internal/modules/jurusan/model"
-	kelasmodel       "backend/internal/modules/kelas/model"
-	mapelmodel       "backend/internal/modules/mapel/model"
-	nilaimodel       "backend/internal/modules/nilai/model"
-	pesertamodel     "backend/internal/modules/peserta/model"
-	soalmodel        "backend/internal/modules/soal/model"
-	usermodel        "backend/internal/modules/user/model"
+	jawabanmodel "backend/internal/modules/jawaban/model"
+	jurusanmodel "backend/internal/modules/jurusan/model"
+	kategorisoalmodel "backend/internal/modules/kategori_soal/model"
+	kelasmodel "backend/internal/modules/kelas/model"
+	mapelmodel "backend/internal/modules/mapel/model"
+	nilaimodel "backend/internal/modules/nilai/model"
+	pesertamodel "backend/internal/modules/peserta/model"
+	soalmodel "backend/internal/modules/soal/model"
+	usermodel "backend/internal/modules/user/model"
 
 	"gorm.io/gorm"
 )
@@ -36,12 +37,17 @@ func RunMigrations(db *gorm.DB) error {
 	db.Exec("ALTER TABLE jadwal ALTER COLUMN acak_soal TYPE smallint USING acak_soal::int::smallint")
 	db.Exec("ALTER TABLE jadwal ALTER COLUMN acak_opsi TYPE smallint USING acak_opsi::int::smallint")
 
+	// Alter benar dan salah di kategori_soal dari smallint ke numeric(5,2) supaya bisa menerima pecahan & nilai minus
+	db.Exec("ALTER TABLE kategori_soal ALTER COLUMN benar TYPE numeric(5,2) USING benar::numeric(5,2)")
+	db.Exec("ALTER TABLE kategori_soal ALTER COLUMN salah TYPE numeric(5,2) USING salah::numeric(5,2)")
+
 	if err := db.AutoMigrate(
 		&usermodel.User{},
 		&mapelmodel.Mapel{},
 		&banksoalmodel.BankSoal{},
 		&soalmodel.Soal{},
 		&jurusanmodel.Jurusan{},
+		&kategorisoalmodel.KategoriSoal{},
 		&kelasmodel.Kelas{},
 		&jadwalmodel.Jadwal{},
 		&jadwalkelasmodel.JadwalKelas{},
