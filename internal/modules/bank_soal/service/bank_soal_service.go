@@ -32,10 +32,11 @@ func NewBankSoalService(repo repository.BankSoalRepository) BankSoalService {
 
 func (s *bankSoalService) CreateBankSoal(req *dto.CreateBankSoalRequest) (*dto.BankSoalResponse, error) {
 	bankSoal := &model.BankSoal{
-		NamaBankSoal: req.NamaBankSoal,
-		IdMapel:      req.IdMapel,
-		JmlSoal:      req.JmlSoal,
-		Deskripsi:    req.Deskripsi,
+		NamaBankSoal:          req.NamaBankSoal,
+		IdMapel:               req.IdMapel,
+		JmlSoal:               req.JmlSoal,
+		NilaiMinimalKelulusan: req.NilaiMinimalKelulusan,
+		Deskripsi:             req.Deskripsi,
 	}
 
 	if err := s.repo.Create(bankSoal); err != nil {
@@ -127,6 +128,7 @@ func (s *bankSoalService) UpdateBankSoal(id string, req *dto.UpdateBankSoalReque
 	bankSoal.NamaBankSoal = req.NamaBankSoal
 	bankSoal.IdMapel = req.IdMapel
 	bankSoal.JmlSoal = req.JmlSoal
+	bankSoal.NilaiMinimalKelulusan = req.NilaiMinimalKelulusan
 	bankSoal.Deskripsi = req.Deskripsi
 
 	if err := s.repo.Update(bankSoal); err != nil {
@@ -154,26 +156,28 @@ func (s *bankSoalService) RestoreBankSoal(id string) error {
 
 func (s *bankSoalService) modelToResponse(bankSoal *model.BankSoal) *dto.BankSoalResponse {
 	return &dto.BankSoalResponse{
-		ID:           bankSoal.ID,
-		NamaBankSoal: bankSoal.NamaBankSoal,
-		IdMapel:      bankSoal.IdMapel,
-		NamaMapel:    "",
-		JmlSoal:      bankSoal.JmlSoal,
-		Deskripsi:    bankSoal.Deskripsi,
-		CreatedAt:    bankSoal.CreatedAt.Format("2006-01-02 15:04:05"),
-		UpdatedAt:    bankSoal.UpdatedAt.Format("2006-01-02 15:04:05"),
+		ID:                    bankSoal.ID,
+		NamaBankSoal:          bankSoal.NamaBankSoal,
+		IdMapel:               bankSoal.IdMapel,
+		NamaMapel:             "",
+		JmlSoal:               bankSoal.JmlSoal,
+		NilaiMinimalKelulusan: bankSoal.NilaiMinimalKelulusan,
+		Deskripsi:             bankSoal.Deskripsi,
+		CreatedAt:             bankSoal.CreatedAt.Format("2006-01-02 15:04:05"),
+		UpdatedAt:             bankSoal.UpdatedAt.Format("2006-01-02 15:04:05"),
 	}
 }
 
 func (s *bankSoalService) joinedToResponse(bankSoal *repository.BankSoalWithMapel) *dto.BankSoalResponse {
 	return &dto.BankSoalResponse{
-		ID:           bankSoal.ID,
-		NamaBankSoal: bankSoal.NamaBankSoal,
-		IdMapel:      bankSoal.IdMapel,
-		NamaMapel:    bankSoal.NamaMapel,
-		JmlSoal:      bankSoal.JmlSoal,
-		Deskripsi:    bankSoal.Deskripsi,
-		CreatedAt:    bankSoal.CreatedAt,
-		UpdatedAt:    bankSoal.UpdatedAt,
+		ID:                    bankSoal.ID,
+		NamaBankSoal:          bankSoal.NamaBankSoal,
+		IdMapel:               bankSoal.IdMapel,
+		NamaMapel:             bankSoal.NamaMapel,
+		JmlSoal:               bankSoal.JmlSoal,
+		NilaiMinimalKelulusan: bankSoal.NilaiMinimalKelulusan,
+		Deskripsi:             bankSoal.Deskripsi,
+		CreatedAt:             bankSoal.CreatedAt,
+		UpdatedAt:             bankSoal.UpdatedAt,
 	}
 }

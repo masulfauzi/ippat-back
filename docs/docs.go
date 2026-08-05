@@ -4579,6 +4579,9 @@ const docTemplate = `{
                 "nama_mapel": {
                     "type": "string"
                 },
+                "nilai_minimal_kelulusan": {
+                    "type": "integer"
+                },
                 "updated_at": {
                     "type": "string"
                 }
@@ -4589,7 +4592,8 @@ const docTemplate = `{
             "required": [
                 "id_mapel",
                 "jml_soal",
-                "nama_bank_soal"
+                "nama_bank_soal",
+                "nilai_minimal_kelulusan"
             ],
             "properties": {
                 "deskripsi": {
@@ -4604,6 +4608,10 @@ const docTemplate = `{
                 },
                 "nama_bank_soal": {
                     "type": "string"
+                },
+                "nilai_minimal_kelulusan": {
+                    "type": "integer",
+                    "minimum": 0
                 }
             }
         },
@@ -5619,7 +5627,8 @@ const docTemplate = `{
             "required": [
                 "id_mapel",
                 "jml_soal",
-                "nama_bank_soal"
+                "nama_bank_soal",
+                "nilai_minimal_kelulusan"
             ],
             "properties": {
                 "deskripsi": {
@@ -5634,6 +5643,10 @@ const docTemplate = `{
                 },
                 "nama_bank_soal": {
                     "type": "string"
+                },
+                "nilai_minimal_kelulusan": {
+                    "type": "integer",
+                    "minimum": 0
                 }
             }
         },

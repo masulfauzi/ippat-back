@@ -8,14 +8,15 @@ import (
 )
 
 type BankSoalWithMapel struct {
-	ID           string `gorm:"column:id"`
-	NamaBankSoal string `gorm:"column:nama_bank_soal"`
-	IdMapel      string `gorm:"column:id_mapel"`
-	NamaMapel    string `gorm:"column:nama_mapel"`
-	JmlSoal      int    `gorm:"column:jml_soal"`
-	Deskripsi    string `gorm:"column:deskripsi"`
-	CreatedAt    string `gorm:"column:created_at"`
-	UpdatedAt    string `gorm:"column:updated_at"`
+	ID                    string `gorm:"column:id"`
+	NamaBankSoal          string `gorm:"column:nama_bank_soal"`
+	IdMapel               string `gorm:"column:id_mapel"`
+	NamaMapel             string `gorm:"column:nama_mapel"`
+	JmlSoal               int    `gorm:"column:jml_soal"`
+	NilaiMinimalKelulusan int    `gorm:"column:nilai_minimal_kelulusan"`
+	Deskripsi             string `gorm:"column:deskripsi"`
+	CreatedAt             string `gorm:"column:created_at"`
+	UpdatedAt             string `gorm:"column:updated_at"`
 }
 
 type BankSoalRepository interface {
@@ -59,7 +60,7 @@ func (r *bankSoalRepository) GetByIDWithMapel(id string) (*BankSoalWithMapel, er
 	var bankSoal BankSoalWithMapel
 	err := r.db.
 		Table("bank_soal").
-		Select("bank_soal.id, bank_soal.nama_bank_soal, bank_soal.id_mapel, mapel.nama_mapel, bank_soal.jml_soal, bank_soal.deskripsi, bank_soal.created_at, bank_soal.updated_at").
+		Select("bank_soal.id, bank_soal.nama_bank_soal, bank_soal.id_mapel, mapel.nama_mapel, bank_soal.jml_soal, bank_soal.nilai_minimal_kelulusan, bank_soal.deskripsi, bank_soal.created_at, bank_soal.updated_at").
 		Joins("INNER JOIN mapel ON bank_soal.id_mapel = mapel.id").
 		Where("bank_soal.id = ? AND bank_soal.deleted_at IS NULL", id).
 		First(&bankSoal).Error
@@ -161,7 +162,7 @@ func (r *bankSoalRepository) GetAllWithMapel(page, pageSize int) ([]BankSoalWith
 
 	err := r.db.
 		Table("bank_soal").
-		Select("bank_soal.id, bank_soal.nama_bank_soal, bank_soal.id_mapel, mapel.nama_mapel, bank_soal.jml_soal, bank_soal.deskripsi, bank_soal.created_at, bank_soal.updated_at").
+		Select("bank_soal.id, bank_soal.nama_bank_soal, bank_soal.id_mapel, mapel.nama_mapel, bank_soal.jml_soal, bank_soal.nilai_minimal_kelulusan, bank_soal.deskripsi, bank_soal.created_at, bank_soal.updated_at").
 		Joins("INNER JOIN mapel ON bank_soal.id_mapel = mapel.id").
 		Where("bank_soal.deleted_at IS NULL").
 		Count(&total).Error
@@ -171,7 +172,7 @@ func (r *bankSoalRepository) GetAllWithMapel(page, pageSize int) ([]BankSoalWith
 
 	err = r.db.
 		Table("bank_soal").
-		Select("bank_soal.id, bank_soal.nama_bank_soal, bank_soal.id_mapel, mapel.nama_mapel, bank_soal.jml_soal, bank_soal.deskripsi, bank_soal.created_at, bank_soal.updated_at").
+		Select("bank_soal.id, bank_soal.nama_bank_soal, bank_soal.id_mapel, mapel.nama_mapel, bank_soal.jml_soal, bank_soal.nilai_minimal_kelulusan, bank_soal.deskripsi, bank_soal.created_at, bank_soal.updated_at").
 		Joins("INNER JOIN mapel ON bank_soal.id_mapel = mapel.id").
 		Where("bank_soal.deleted_at IS NULL").
 		Offset(offset).
@@ -196,7 +197,7 @@ func (r *bankSoalRepository) GetByMapelIDWithMapel(mapelID string, page, pageSiz
 
 	err := r.db.
 		Table("bank_soal").
-		Select("bank_soal.id, bank_soal.nama_bank_soal, bank_soal.id_mapel, mapel.nama_mapel, bank_soal.jml_soal, bank_soal.deskripsi, bank_soal.created_at, bank_soal.updated_at").
+		Select("bank_soal.id, bank_soal.nama_bank_soal, bank_soal.id_mapel, mapel.nama_mapel, bank_soal.jml_soal, bank_soal.nilai_minimal_kelulusan, bank_soal.deskripsi, bank_soal.created_at, bank_soal.updated_at").
 		Joins("INNER JOIN mapel ON bank_soal.id_mapel = mapel.id").
 		Where("bank_soal.id_mapel = ? AND bank_soal.deleted_at IS NULL", mapelID).
 		Count(&total).Error
@@ -206,7 +207,7 @@ func (r *bankSoalRepository) GetByMapelIDWithMapel(mapelID string, page, pageSiz
 
 	err = r.db.
 		Table("bank_soal").
-		Select("bank_soal.id, bank_soal.nama_bank_soal, bank_soal.id_mapel, mapel.nama_mapel, bank_soal.jml_soal, bank_soal.deskripsi, bank_soal.created_at, bank_soal.updated_at").
+		Select("bank_soal.id, bank_soal.nama_bank_soal, bank_soal.id_mapel, mapel.nama_mapel, bank_soal.jml_soal, bank_soal.nilai_minimal_kelulusan, bank_soal.deskripsi, bank_soal.created_at, bank_soal.updated_at").
 		Joins("INNER JOIN mapel ON bank_soal.id_mapel = mapel.id").
 		Where("bank_soal.id_mapel = ? AND bank_soal.deleted_at IS NULL", mapelID).
 		Offset(offset).
