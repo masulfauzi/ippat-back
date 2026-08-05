@@ -127,7 +127,7 @@ func (s *soalService) CreateSoal(req *dto.CreateSoalRequest) (*dto.SoalResponse,
 
 	soal := &model.Soal{
 		IdBankSoal:     req.IdBankSoal,
-		IdKategoriSoal: req.IdKategoriSoal,
+		IdKategoriSoal: stringToNullablePtr(req.IdKategoriSoal),
 		NoSoal:         req.NoSoal,
 		Soal:           req.Soal,
 		GambarSoal:     gambarSoalName,
@@ -306,7 +306,7 @@ func (s *soalService) UpdateSoal(id string, req *dto.UpdateSoalRequest) (*dto.So
 		soal.GambarE = newFilename
 	}
 
-	soal.IdKategoriSoal = req.IdKategoriSoal
+	soal.IdKategoriSoal = stringToNullablePtr(req.IdKategoriSoal)
 	soal.NoSoal = req.NoSoal
 	soal.Soal = req.Soal
 	soal.OpsiA = req.OpsiA
@@ -415,7 +415,7 @@ func (s *soalService) modelToResponse(soal *model.Soal) *dto.SoalResponse {
 	return &dto.SoalResponse{
 		ID:             soal.ID,
 		IdBankSoal:     soal.IdBankSoal,
-		IdKategoriSoal: soal.IdKategoriSoal,
+		IdKategoriSoal: nullablePtrToString(soal.IdKategoriSoal),
 		NoSoal:         soal.NoSoal,
 		Soal:           soal.Soal,
 		GambarSoal:     s.buildImageURL(soal.GambarSoal, "soal"),
@@ -433,6 +433,20 @@ func (s *soalService) modelToResponse(soal *model.Soal) *dto.SoalResponse {
 		CreatedAt:      soal.CreatedAt.Format("2006-01-02 15:04:05"),
 		UpdatedAt:      soal.UpdatedAt.Format("2006-01-02 15:04:05"),
 	}
+}
+
+func stringToNullablePtr(s string) *string {
+	if s == "" {
+		return nil
+	}
+	return &s
+}
+
+func nullablePtrToString(s *string) string {
+	if s == nil {
+		return ""
+	}
+	return *s
 }
 
 func (s *soalService) downloadGambar(ctx context.Context, sourceBase, filename, folder string) string {

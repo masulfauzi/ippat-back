@@ -8,7 +8,7 @@ import (
 type Soal struct {
 	ID             string         `gorm:"type:uuid;primary_key;default:gen_random_uuid()" json:"id"`
 	IdBankSoal     string         `gorm:"type:uuid;index" json:"id_bank_soal"`
-	IdKategoriSoal string         `gorm:"type:uuid;index" json:"id_kategori_soal"`
+	IdKategoriSoal *string        `gorm:"type:uuid;index" json:"id_kategori_soal"`
 	NoSoal         int            `gorm:"type:integer" json:"no_soal"`
 	Soal           string         `gorm:"type:text" json:"soal"`
 	GambarSoal     string         `gorm:"type:varchar(500)" json:"gambar_soal"`

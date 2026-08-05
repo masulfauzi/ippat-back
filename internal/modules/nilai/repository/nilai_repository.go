@@ -197,19 +197,24 @@ func (r *nilaiRepository) GetByPesertaAndJadwal(idPeserta, idJadwal string) (*mo
 	return &nilai, nil
 }
 
+// HitungNilai menjumlahkan poin per jawaban berdasarkan kategori_soal dari
+// masing-masing soal (kategori_soal.benar/salah). Soal tanpa kategori
+// (id_kategori_soal NULL) tidak menyumbang poin.
 func (r *nilaiRepository) HitungNilai(idNilai string) (float64, error) {
 	var hasil float64
 	err := r.db.Raw(`
 		SELECT COALESCE(
 			SUM(CASE
-				WHEN is_benar = 1 THEN 4
-				WHEN is_benar = 0 THEN -1
+				WHEN jawaban.is_benar = 1 THEN COALESCE(kategori_soal.benar, 0)
+				WHEN jawaban.is_benar = 0 THEN COALESCE(kategori_soal.salah, 0)
 				ELSE 0
 			END),
 			0
 		)
 		FROM jawaban
-		WHERE id_nilai = ? AND deleted_at IS NULL
+		INNER JOIN soal ON jawaban.id_soal = soal.id
+		LEFT JOIN kategori_soal ON soal.id_kategori_soal = kategori_soal.id AND kategori_soal.deleted_at IS NULL
+		WHERE jawaban.id_nilai = ? AND jawaban.deleted_at IS NULL
 	`, idNilai).Scan(&hasil).Error
 	return hasil, err
 }

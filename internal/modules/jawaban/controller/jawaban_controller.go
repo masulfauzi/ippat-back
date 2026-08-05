@@ -56,11 +56,11 @@ func (c *JawabanController) CreateJawaban(ctx *fiber.Ctx) error {
 // @Failure      500        {object}  helpers.Response
 // @Router       /jawaban [get]
 func (c *JawabanController) GetAllJawaban(ctx *fiber.Ctx) error {
-	page      := ctx.Query("page", "1")
-	pageSize  := ctx.Query("page_size", "10")
-	idNilai   := ctx.Query("id_nilai", "")
+	page := ctx.Query("page", "1")
+	pageSize := ctx.Query("page_size", "10")
+	idNilai := ctx.Query("id_nilai", "")
 	idPeserta := ctx.Query("id_peserta", "")
-	idSoal    := ctx.Query("id_soal", "")
+	idSoal := ctx.Query("id_soal", "")
 
 	pageNum, err := strconv.Atoi(page)
 	if err != nil || pageNum <= 0 {
@@ -130,8 +130,8 @@ func (c *JawabanController) GetJawabanByNilai(ctx *fiber.Ctx) error {
 // @Router       /jawaban/peserta/{id_peserta} [get]
 func (c *JawabanController) GetJawabanByPeserta(ctx *fiber.Ctx) error {
 	idPeserta := ctx.Params("id_peserta")
-	page      := ctx.Query("page", "1")
-	pageSize  := ctx.Query("page_size", "10")
+	page := ctx.Query("page", "1")
+	pageSize := ctx.Query("page_size", "10")
 
 	pageNum, err := strconv.Atoi(page)
 	if err != nil || pageNum <= 0 {
@@ -179,7 +179,7 @@ func (c *JawabanController) UpdateJawaban(ctx *fiber.Ctx) error {
 
 // ClearJawaban godoc
 // @Summary      Kosongkan pilihan jawaban (batalkan jawaban)
-// @Description  Mengosongkan isi jawaban (jawaban & is_benar diset null) TANPA menghapus baris soal dari attempt ujian — soal tetap muncul di daftar ujian sebagai "belum dijawab". Dipakai saat peserta ragu dengan jawabannya dan ingin membatalkannya agar tidak kena penalti -1 untuk jawaban salah (soal kosong dihitung 0, bukan -1). Peserta tetap bisa memilih jawaban lain lagi lewat PUT /jawaban/{id}.
+// @Description  Mengosongkan isi jawaban (jawaban & is_benar diset null) TANPA menghapus baris soal dari attempt ujian — soal tetap muncul di daftar ujian sebagai "belum dijawab". Dipakai saat peserta ragu dengan jawabannya dan ingin membatalkannya agar tidak kena penalti poin salah dari kategori soal (soal kosong dihitung 0). Peserta tetap bisa memilih jawaban lain lagi lewat PUT /jawaban/{id}.
 // @Tags         Jawaban
 // @Produce      json
 // @Param        id   path      string  true  "ID Jawaban"

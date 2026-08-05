@@ -1583,7 +1583,7 @@ const docTemplate = `{
                         "BearerAuth": []
                     }
                 ],
-                "description": "Mengosongkan isi jawaban (jawaban \u0026 is_benar diset null) TANPA menghapus baris soal dari attempt ujian — soal tetap muncul di daftar ujian sebagai \"belum dijawab\". Dipakai saat peserta ragu dengan jawabannya dan ingin membatalkannya agar tidak kena penalti -1 untuk jawaban salah (soal kosong dihitung 0, bukan -1). Peserta tetap bisa memilih jawaban lain lagi lewat PUT /jawaban/{id}.",
+                "description": "Mengosongkan isi jawaban (jawaban \u0026 is_benar diset null) TANPA menghapus baris soal dari attempt ujian — soal tetap muncul di daftar ujian sebagai \"belum dijawab\". Dipakai saat peserta ragu dengan jawabannya dan ingin membatalkannya agar tidak kena penalti poin salah dari kategori soal (soal kosong dihitung 0). Peserta tetap bisa memilih jawaban lain lagi lewat PUT /jawaban/{id}.",
                 "produces": [
                     "application/json"
                 ],
