@@ -19,18 +19,19 @@ type UpdateNilaiRequest struct {
 }
 
 type NilaiResponse struct {
-	ID                string  `json:"id"`
-	IDPeserta         string  `json:"id_peserta"`
-	NamaPeserta       string  `json:"nama_peserta"`
-	IDJadwal          string  `json:"id_jadwal"`
-	NamaUjian         string  `json:"nama_ujian"`
-	Nilai             float64 `json:"nilai"`
-	StatusKelulusan   string  `json:"status_kelulusan"`
-	WktMulai          *string `json:"wkt_mulai"`
-	AktivitasTerakhir *string `json:"aktivitas_terakhir"`
-	WktSelesai        *string `json:"wkt_selesai"`
-	CreatedAt         string  `json:"created_at"`
-	UpdatedAt         string  `json:"updated_at"`
+	ID                    string  `json:"id"`
+	IDPeserta             string  `json:"id_peserta"`
+	NamaPeserta           string  `json:"nama_peserta"`
+	IDJadwal              string  `json:"id_jadwal"`
+	NamaUjian             string  `json:"nama_ujian"`
+	Nilai                 float64 `json:"nilai"`
+	NilaiMinimalKelulusan int     `json:"nilai_minimal_kelulusan"`
+	StatusKelulusan       string  `json:"status_kelulusan"`
+	WktMulai              *string `json:"wkt_mulai"`
+	AktivitasTerakhir     *string `json:"aktivitas_terakhir"`
+	WktSelesai            *string `json:"wkt_selesai"`
+	CreatedAt             string  `json:"created_at"`
+	UpdatedAt             string  `json:"updated_at"`
 }
 
 type NilaiListResponse struct {

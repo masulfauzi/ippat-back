@@ -395,18 +395,19 @@ func hitungStatusKelulusan(nilai float64, nilaiMinimalKelulusan int) string {
 
 func detailToResponse(r *repository.NilaiWithDetail) *dto.NilaiResponse {
 	return &dto.NilaiResponse{
-		ID:                r.ID,
-		IDPeserta:         r.IDPeserta,
-		NamaPeserta:       r.NamaPeserta,
-		IDJadwal:          r.IDJadwal,
-		NamaUjian:         r.NamaUjian,
-		Nilai:             r.Nilai,
-		StatusKelulusan:   hitungStatusKelulusan(r.Nilai, r.NilaiMinimalKelulusan),
-		WktMulai:          r.WktMulai,
-		AktivitasTerakhir: r.AktivitasTerakhir,
-		WktSelesai:        r.WktSelesai,
-		CreatedAt:         r.CreatedAt,
-		UpdatedAt:         r.UpdatedAt,
+		ID:                    r.ID,
+		IDPeserta:             r.IDPeserta,
+		NamaPeserta:           r.NamaPeserta,
+		IDJadwal:              r.IDJadwal,
+		NamaUjian:             r.NamaUjian,
+		Nilai:                 r.Nilai,
+		NilaiMinimalKelulusan: r.NilaiMinimalKelulusan,
+		StatusKelulusan:       hitungStatusKelulusan(r.Nilai, r.NilaiMinimalKelulusan),
+		WktMulai:              r.WktMulai,
+		AktivitasTerakhir:     r.AktivitasTerakhir,
+		WktSelesai:            r.WktSelesai,
+		CreatedAt:             r.CreatedAt,
+		UpdatedAt:             r.UpdatedAt,
 	}
 }
 

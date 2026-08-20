@@ -5453,6 +5453,9 @@ const docTemplate = `{
                 "nilai": {
                     "type": "number"
                 },
+                "nilai_minimal_kelulusan": {
+                    "type": "integer"
+                },
                 "status_kelulusan": {
                     "type": "string"
                 },
