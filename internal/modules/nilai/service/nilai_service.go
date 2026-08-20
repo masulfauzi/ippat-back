@@ -11,9 +11,9 @@ import (
 	"time"
 
 	"backend/internal/constants"
+	jadwalmodel "backend/internal/modules/jadwal/model"
 	jawabanmodel "backend/internal/modules/jawaban/model"
 	jawabanrepo "backend/internal/modules/jawaban/repository"
-	jadwalmodel "backend/internal/modules/jadwal/model"
 	"backend/internal/modules/nilai/dto"
 	"backend/internal/modules/nilai/model"
 	"backend/internal/modules/nilai/repository"
@@ -181,7 +181,7 @@ func (s *nilaiService) UpdateNilai(id string, req *dto.UpdateNilaiRequest) (*dto
 
 	if req.IDPeserta != nil || req.IDJadwal != nil {
 		newPeserta := existing.IDPeserta
-		newJadwal  := existing.IDJadwal
+		newJadwal := existing.IDJadwal
 		if req.IDPeserta != nil {
 			newPeserta = *req.IDPeserta
 		}
@@ -198,7 +198,7 @@ func (s *nilaiService) UpdateNilai(id string, req *dto.UpdateNilaiRequest) (*dto
 			}
 		}
 		existing.IDPeserta = newPeserta
-		existing.IDJadwal  = newJadwal
+		existing.IDJadwal = newJadwal
 	}
 
 	if req.WktMulai != nil {
@@ -381,6 +381,18 @@ func (s *nilaiService) MulaiUjian(idPeserta, idJadwal string) (*dto.NilaiRespons
 	return detailToResponse(created), true, nil
 }
 
+const (
+	statusLulus      = "LULUS"
+	statusTidakLulus = "TIDAK LULUS"
+)
+
+func hitungStatusKelulusan(nilai float64, nilaiMinimalKelulusan int) string {
+	if nilai >= float64(nilaiMinimalKelulusan) {
+		return statusLulus
+	}
+	return statusTidakLulus
+}
+
 func detailToResponse(r *repository.NilaiWithDetail) *dto.NilaiResponse {
 	return &dto.NilaiResponse{
 		ID:                r.ID,
@@ -389,6 +401,7 @@ func detailToResponse(r *repository.NilaiWithDetail) *dto.NilaiResponse {
 		IDJadwal:          r.IDJadwal,
 		NamaUjian:         r.NamaUjian,
 		Nilai:             r.Nilai,
+		StatusKelulusan:   hitungStatusKelulusan(r.Nilai, r.NilaiMinimalKelulusan),
 		WktMulai:          r.WktMulai,
 		AktivitasTerakhir: r.AktivitasTerakhir,
 		WktSelesai:        r.WktSelesai,

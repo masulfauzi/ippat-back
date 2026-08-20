@@ -25,6 +25,7 @@ type NilaiResponse struct {
 	IDJadwal          string  `json:"id_jadwal"`
 	NamaUjian         string  `json:"nama_ujian"`
 	Nilai             float64 `json:"nilai"`
+	StatusKelulusan   string  `json:"status_kelulusan"`
 	WktMulai          *string `json:"wkt_mulai"`
 	AktivitasTerakhir *string `json:"aktivitas_terakhir"`
 	WktSelesai        *string `json:"wkt_selesai"`

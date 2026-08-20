@@ -5453,6 +5453,9 @@ const docTemplate = `{
                 "nilai": {
                     "type": "number"
                 },
+                "status_kelulusan": {
+                    "type": "string"
+                },
                 "updated_at": {
                     "type": "string"
                 },

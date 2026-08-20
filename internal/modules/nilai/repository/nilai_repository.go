@@ -8,17 +8,18 @@ import (
 )
 
 type NilaiWithDetail struct {
-	ID                string  `gorm:"column:id"`
-	IDPeserta         string  `gorm:"column:id_peserta"`
-	NamaPeserta       string  `gorm:"column:nama_peserta"`
-	IDJadwal          string  `gorm:"column:id_jadwal"`
-	NamaUjian         string  `gorm:"column:nama_ujian"`
-	Nilai             float64 `gorm:"column:nilai"`
-	WktMulai          *string `gorm:"column:wkt_mulai"`
-	AktivitasTerakhir *string `gorm:"column:aktivitas_terakhir"`
-	WktSelesai        *string `gorm:"column:wkt_selesai"`
-	CreatedAt         string  `gorm:"column:created_at"`
-	UpdatedAt         string  `gorm:"column:updated_at"`
+	ID                    string  `gorm:"column:id"`
+	IDPeserta             string  `gorm:"column:id_peserta"`
+	NamaPeserta           string  `gorm:"column:nama_peserta"`
+	IDJadwal              string  `gorm:"column:id_jadwal"`
+	NamaUjian             string  `gorm:"column:nama_ujian"`
+	Nilai                 float64 `gorm:"column:nilai"`
+	NilaiMinimalKelulusan int     `gorm:"column:nilai_minimal_kelulusan"`
+	WktMulai              *string `gorm:"column:wkt_mulai"`
+	AktivitasTerakhir     *string `gorm:"column:aktivitas_terakhir"`
+	WktSelesai            *string `gorm:"column:wkt_selesai"`
+	CreatedAt             string  `gorm:"column:created_at"`
+	UpdatedAt             string  `gorm:"column:updated_at"`
 }
 
 type NilaiExportRow struct {
@@ -77,6 +78,7 @@ func (r *nilaiRepository) GetByIDWithDetail(id string) (*NilaiWithDetail, error)
 			nilai.id_jadwal,
 			jadwal.nama_ujian,
 			nilai.nilai,
+			COALESCE(bank_soal.nilai_minimal_kelulusan, 0) AS nilai_minimal_kelulusan,
 			TO_CHAR(nilai.wkt_mulai, 'YYYY-MM-DD HH24:MI:SS') AS wkt_mulai,
 			TO_CHAR(nilai.aktivitas_terakhir, 'YYYY-MM-DD HH24:MI:SS') AS aktivitas_terakhir,
 			TO_CHAR(nilai.wkt_selesai, 'YYYY-MM-DD HH24:MI:SS') AS wkt_selesai,
@@ -85,6 +87,7 @@ func (r *nilaiRepository) GetByIDWithDetail(id string) (*NilaiWithDetail, error)
 		`).
 		Joins("INNER JOIN peserta ON nilai.id_peserta = peserta.id").
 		Joins("INNER JOIN jadwal ON nilai.id_jadwal = jadwal.id").
+		Joins("LEFT JOIN bank_soal ON jadwal.id_bank_soal = bank_soal.id AND bank_soal.deleted_at IS NULL").
 		Where("nilai.id = ? AND nilai.deleted_at IS NULL", id).
 		First(&result).Error
 	if err != nil {
@@ -130,6 +133,7 @@ func (r *nilaiRepository) GetAllWithDetail(page, pageSize int, idPeserta, idJadw
 			nilai.id_jadwal,
 			jadwal.nama_ujian,
 			nilai.nilai,
+			COALESCE(bank_soal.nilai_minimal_kelulusan, 0) AS nilai_minimal_kelulusan,
 			TO_CHAR(nilai.wkt_mulai, 'YYYY-MM-DD HH24:MI:SS') AS wkt_mulai,
 			TO_CHAR(nilai.aktivitas_terakhir, 'YYYY-MM-DD HH24:MI:SS') AS aktivitas_terakhir,
 			TO_CHAR(nilai.wkt_selesai, 'YYYY-MM-DD HH24:MI:SS') AS wkt_selesai,
@@ -138,6 +142,7 @@ func (r *nilaiRepository) GetAllWithDetail(page, pageSize int, idPeserta, idJadw
 		`).
 		Joins("INNER JOIN peserta ON nilai.id_peserta = peserta.id").
 		Joins("INNER JOIN jadwal ON nilai.id_jadwal = jadwal.id").
+		Joins("LEFT JOIN bank_soal ON jadwal.id_bank_soal = bank_soal.id AND bank_soal.deleted_at IS NULL").
 		Where("nilai.deleted_at IS NULL")
 
 	if idPeserta != "" {
