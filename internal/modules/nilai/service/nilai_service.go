@@ -47,6 +47,12 @@ type NilaiService interface {
 	RestoreNilai(id string) error
 	MulaiUjian(idPeserta, idJadwal string) (*dto.NilaiResponse, bool, error)
 	ExportNilaiByJadwal(idJadwal string) (*ExportResult, error)
+	AnalisisJawabanByJadwal(idJadwal string) (*AnalisisJawabanResult, error)
+}
+
+type AnalisisJawabanResult struct {
+	ExcelBytes []byte
+	NamaUjian  string
 }
 
 type nilaiService struct {
@@ -530,5 +536,169 @@ func (s *nilaiService) ExportNilaiByJadwal(idJadwal string) (*ExportResult, erro
 	return &ExportResult{
 		ZipBytes:  zipBuf.Bytes(),
 		NamaUjian: namaUjian,
+	}, nil
+}
+
+func (s *nilaiService) AnalisisJawabanByJadwal(idJadwal string) (*AnalisisJawabanResult, error) {
+	// 1. Ambil info jadwal + KKM dari bank_soal
+	type jadwalInfo struct {
+		NamaUjian             string `gorm:"column:nama_ujian"`
+		IDBankSoal            string `gorm:"column:id_bank_soal"`
+		NilaiMinimalKelulusan int    `gorm:"column:nilai_minimal_kelulusan"`
+	}
+	var info jadwalInfo
+	if err := s.db.Table("jadwal").
+		Select("jadwal.nama_ujian, jadwal.id_bank_soal, COALESCE(bank_soal.nilai_minimal_kelulusan, 0) AS nilai_minimal_kelulusan").
+		Joins("LEFT JOIN bank_soal ON jadwal.id_bank_soal = bank_soal.id AND bank_soal.deleted_at IS NULL").
+		Where("jadwal.id = ? AND jadwal.deleted_at IS NULL", idJadwal).
+		Scan(&info).Error; err != nil || info.NamaUjian == "" {
+		return nil, errors.New("jadwal tidak ditemukan")
+	}
+
+	// 2. Kolom soal berdasarkan no_soal ASLI (bukan no_urut hasil acak per peserta)
+	var soals []soalmodel.Soal
+	if err := s.db.Where("id_bank_soal = ? AND deleted_at IS NULL", info.IDBankSoal).
+		Order("no_soal ASC").
+		Find(&soals).Error; err != nil {
+		return nil, err
+	}
+	if len(soals) == 0 {
+		return nil, errors.New("bank soal tidak memiliki soal")
+	}
+
+	// 3. Peserta (attempt) yang mengerjakan jadwal ini
+	type analisisPesertaRow struct {
+		IDNilai     string  `gorm:"column:id_nilai"`
+		NamaPeserta string  `gorm:"column:nama_peserta"`
+		NamaKelas   string  `gorm:"column:nama_kelas"`
+		Nilai       float64 `gorm:"column:nilai"`
+	}
+	var pesertaRows []analisisPesertaRow
+	if err := s.db.Table("nilai").
+		Select("nilai.id AS id_nilai, peserta.nama AS nama_peserta, kelas.nama_kelas, nilai.nilai").
+		Joins("INNER JOIN peserta ON nilai.id_peserta = peserta.id").
+		Joins("INNER JOIN kelas ON peserta.id_kelas = kelas.id").
+		Where("nilai.id_jadwal = ? AND nilai.deleted_at IS NULL", idJadwal).
+		Order("kelas.nama_kelas ASC, peserta.nama ASC").
+		Scan(&pesertaRows).Error; err != nil {
+		return nil, err
+	}
+	if len(pesertaRows) == 0 {
+		return nil, errors.New("belum ada peserta yang mengerjakan ujian ini")
+	}
+
+	// 4. Semua jawaban milik attempt-attempt tersebut, di-index [id_nilai][id_soal]
+	nilaiIDs := make([]string, len(pesertaRows))
+	for i, p := range pesertaRows {
+		nilaiIDs[i] = p.IDNilai
+	}
+	var jawabans []jawabanmodel.Jawaban
+	if err := s.db.Where("id_nilai IN ? AND deleted_at IS NULL", nilaiIDs).Find(&jawabans).Error; err != nil {
+		return nil, err
+	}
+	jawabanMap := make(map[string]map[string]jawabanmodel.Jawaban, len(pesertaRows))
+	for _, j := range jawabans {
+		if jawabanMap[j.IDNilai] == nil {
+			jawabanMap[j.IDNilai] = make(map[string]jawabanmodel.Jawaban)
+		}
+		jawabanMap[j.IDNilai][j.IDSoal] = j
+	}
+
+	// 5. Build file Excel
+	xlsx := excelize.NewFile()
+	sheet := "Analisis Jawaban"
+	xlsx.SetSheetName("Sheet1", sheet)
+
+	headerStyle, _ := xlsx.NewStyle(&excelize.Style{
+		Font:      &excelize.Font{Bold: true, Color: "FFFFFF"},
+		Fill:      excelize.Fill{Type: "pattern", Color: []string{"4472C4"}, Pattern: 1},
+		Alignment: &excelize.Alignment{Horizontal: "center", Vertical: "center"},
+	})
+	benarStyle, _ := xlsx.NewStyle(&excelize.Style{
+		Font:      &excelize.Font{Color: "006100"},
+		Fill:      excelize.Fill{Type: "pattern", Color: []string{"C6EFCE"}, Pattern: 1},
+		Alignment: &excelize.Alignment{Horizontal: "center"},
+	})
+	salahStyle, _ := xlsx.NewStyle(&excelize.Style{
+		Font:      &excelize.Font{Color: "9C0006"},
+		Fill:      excelize.Fill{Type: "pattern", Color: []string{"FFC7CE"}, Pattern: 1},
+		Alignment: &excelize.Alignment{Horizontal: "center"},
+	})
+	kosongStyle, _ := xlsx.NewStyle(&excelize.Style{
+		Font:      &excelize.Font{Color: "808080"},
+		Fill:      excelize.Fill{Type: "pattern", Color: []string{"FFFFFF"}, Pattern: 1},
+		Alignment: &excelize.Alignment{Horizontal: "center"},
+	})
+	lulusStyle, _ := xlsx.NewStyle(&excelize.Style{
+		Font: &excelize.Font{Bold: true, Color: "006100"},
+	})
+	tidakLulusStyle, _ := xlsx.NewStyle(&excelize.Style{
+		Font: &excelize.Font{Bold: true, Color: "9C0006"},
+	})
+
+	// Header
+	headers := []string{"No", "Nama Peserta", "Kelas"}
+	for _, sl := range soals {
+		headers = append(headers, fmt.Sprintf("No %d", sl.NoSoal))
+	}
+	headers = append(headers, "Nilai", "Status Kelulusan")
+	for col, h := range headers {
+		cell, _ := excelize.CoordinatesToCellName(col+1, 1)
+		xlsx.SetCellValue(sheet, cell, h)
+	}
+	lastColName, _ := excelize.ColumnNumberToName(len(headers))
+	xlsx.SetCellStyle(sheet, "A1", fmt.Sprintf("%s1", lastColName), headerStyle)
+
+	// Data rows
+	nilaiColNum := 3 + len(soals) + 1
+	statusColNum := nilaiColNum + 1
+	for i, p := range pesertaRows {
+		rowNum := i + 2
+		xlsx.SetCellValue(sheet, fmt.Sprintf("A%d", rowNum), i+1)
+		xlsx.SetCellValue(sheet, fmt.Sprintf("B%d", rowNum), p.NamaPeserta)
+		xlsx.SetCellValue(sheet, fmt.Sprintf("C%d", rowNum), p.NamaKelas)
+
+		for colIdx, sl := range soals {
+			cellName, _ := excelize.CoordinatesToCellName(3+colIdx+1, rowNum)
+
+			j, answered := jawabanMap[p.IDNilai][sl.ID]
+			if !answered || j.Jawaban == nil {
+				xlsx.SetCellValue(sheet, cellName, "-")
+				xlsx.SetCellStyle(sheet, cellName, cellName, kosongStyle)
+				continue
+			}
+			xlsx.SetCellValue(sheet, cellName, *j.Jawaban)
+			if j.IsBenar != nil && *j.IsBenar == 1 {
+				xlsx.SetCellStyle(sheet, cellName, cellName, benarStyle)
+			} else {
+				xlsx.SetCellStyle(sheet, cellName, cellName, salahStyle)
+			}
+		}
+
+		nilaiCell, _ := excelize.CoordinatesToCellName(nilaiColNum, rowNum)
+		statusCell, _ := excelize.CoordinatesToCellName(statusColNum, rowNum)
+		xlsx.SetCellValue(sheet, nilaiCell, p.Nilai)
+
+		status := hitungStatusKelulusan(p.Nilai, info.NilaiMinimalKelulusan)
+		xlsx.SetCellValue(sheet, statusCell, status)
+		if status == statusLulus {
+			xlsx.SetCellStyle(sheet, statusCell, statusCell, lulusStyle)
+		} else {
+			xlsx.SetCellStyle(sheet, statusCell, statusCell, tidakLulusStyle)
+		}
+	}
+
+	xlsx.SetColWidth(sheet, "A", "A", 5)
+	xlsx.SetColWidth(sheet, "B", "B", 25)
+	xlsx.SetColWidth(sheet, "C", "C", 15)
+
+	var buf bytes.Buffer
+	if err := xlsx.Write(&buf); err != nil {
+		return nil, err
+	}
+
+	return &AnalisisJawabanResult{
+		ExcelBytes: buf.Bytes(),
+		NamaUjian:  info.NamaUjian,
 	}, nil
 }

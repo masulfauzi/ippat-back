@@ -305,3 +305,32 @@ func (c *NilaiController) ExportNilai(ctx *fiber.Ctx) error {
 	ctx.Set("Content-Disposition", fmt.Sprintf(`attachment; filename="%s"`, filename))
 	return ctx.Send(result.ZipBytes)
 }
+
+// AnalisisJawaban godoc
+// @Summary      Analisis jawaban peserta per soal (Excel)
+// @Description  Menghasilkan file Excel berisi matriks jawaban tiap peserta untuk setiap nomor soal pada satu jadwal ujian. Sel jawaban diwarnai hijau (benar), merah (salah), atau putih (tidak dijawab), diikuti kolom Nilai dan Status Kelulusan di akhir. Response bukan JSON, melainkan file binary (.xlsx) yang langsung ter-download.
+// @Tags         Nilai
+// @Produce      application/vnd.openxmlformats-officedocument.spreadsheetml.sheet
+// @Param        id_jadwal  path      string  true  "ID Jadwal"
+// @Success      200        {file}    file    "File Excel hasil analisis jawaban"
+// @Failure      400        {object}  helpers.Response
+// @Security     BearerAuth
+// @Router       /nilai/analisis-jawaban/{id_jadwal} [get]
+func (c *NilaiController) AnalisisJawaban(ctx *fiber.Ctx) error {
+	idJadwal := ctx.Params("id_jadwal")
+	if idJadwal == "" {
+		return helpers.ErrorResponse(ctx, fiber.StatusBadRequest, "id_jadwal tidak boleh kosong", nil)
+	}
+
+	result, err := c.service.AnalisisJawabanByJadwal(idJadwal)
+	if err != nil {
+		return helpers.ErrorResponse(ctx, fiber.StatusBadRequest, err.Error(), nil)
+	}
+
+	safeNama := strings.ReplaceAll(result.NamaUjian, " ", "_")
+	filename := fmt.Sprintf("analisis_jawaban_%s.xlsx", safeNama)
+
+	ctx.Set("Content-Type", "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet")
+	ctx.Set("Content-Disposition", fmt.Sprintf(`attachment; filename="%s"`, filename))
+	return ctx.Send(result.ExcelBytes)
+}
