@@ -23,3 +23,22 @@ func IsValidKunci(k string) bool {
 	k = strings.ToUpper(strings.TrimSpace(k))
 	return k == "A" || k == "B" || k == "C" || k == "D" || k == "E"
 }
+
+// ValidatePesertaRow memvalidasi satu row dari excel import peserta
+func ValidatePesertaRow(row *ExcelPesertaRow) []string {
+	var errors []string
+
+	if strings.TrimSpace(row.Nama) == "" {
+		errors = append(errors, "nama tidak boleh kosong")
+	}
+	if strings.TrimSpace(row.Username) == "" {
+		errors = append(errors, "username tidak boleh kosong")
+	}
+	if strings.TrimSpace(row.Password) == "" {
+		errors = append(errors, "password tidak boleh kosong")
+	} else if len(row.Password) < 6 {
+		errors = append(errors, "password minimal 6 karakter")
+	}
+
+	return errors
+}

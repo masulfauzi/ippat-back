@@ -1,6 +1,7 @@
 package controller
 
 import (
+	"path/filepath"
 	"strconv"
 
 	"backend/internal/helpers"
@@ -140,6 +141,59 @@ func (c *PesertaController) DeletePeserta(ctx *fiber.Ctx) error {
 	}
 
 	return helpers.SuccessResponse(ctx, fiber.StatusOK, "Delete peserta successfully", nil)
+}
+
+// ImportPesertaFromExcel godoc
+// @Summary      Import peserta massal dari file Excel
+// @Description  Upload file .xls/.xlsx (maks 10MB) berisi banyak peserta sekaligus untuk satu kelas. Kolom: Nama, Username, Password. Response berisi ringkasan jumlah berhasil/gagal beserta detail error per baris.
+// @Tags         Peserta
+// @Accept       multipart/form-data
+// @Produce      json
+// @Param        id_kelas  formData  string  true  "ID Kelas tujuan"
+// @Param        file      formData  file    true  "File Excel (.xls/.xlsx, maks 10MB)"
+// @Success      200  {object}  helpers.Response{data=dto.ImportPesertaResponse}
+// @Failure      400  {object}  helpers.Response
+// @Security     BearerAuth
+// @Router       /peserta/import [post]
+func (c *PesertaController) ImportPesertaFromExcel(ctx *fiber.Ctx) error {
+	file, err := ctx.FormFile("file")
+	if err != nil {
+		return helpers.ErrorResponse(ctx, fiber.StatusBadRequest, "File tidak ditemukan", map[string]string{
+			"error": "Silakan upload file excel",
+		})
+	}
+
+	const maxFileSize = 10 * 1024 * 1024
+	if file.Size > maxFileSize {
+		return helpers.ErrorResponse(ctx, fiber.StatusBadRequest, "File terlalu besar", map[string]string{
+			"error": "Max file size adalah 10MB",
+		})
+	}
+
+	ext := filepath.Ext(file.Filename)
+	if ext != ".xls" && ext != ".xlsx" {
+		return helpers.ErrorResponse(ctx, fiber.StatusBadRequest, "Format file tidak valid", map[string]string{
+			"error": "File harus berupa .xls atau .xlsx",
+		})
+	}
+
+	req := &dto.ImportPesertaRequest{
+		IDKelas: ctx.FormValue("id_kelas"),
+		File:    file,
+	}
+
+	if req.IDKelas == "" {
+		return helpers.ErrorResponse(ctx, fiber.StatusBadRequest, "id_kelas tidak ditemukan", nil)
+	}
+
+	resp, err := c.service.ImportPesertaFromExcel(ctx.Context(), req)
+	if err != nil {
+		return helpers.ErrorResponse(ctx, fiber.StatusBadRequest, "Import peserta gagal", map[string]string{
+			"error": err.Error(),
+		})
+	}
+
+	return helpers.SuccessResponse(ctx, fiber.StatusOK, "Import peserta berhasil", resp)
 }
 
 // RestorePeserta godoc

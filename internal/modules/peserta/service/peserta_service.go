@@ -1,8 +1,12 @@
 package service
 
 import (
+	"context"
 	"errors"
 	"math"
+	"strconv"
+	"strings"
+	"time"
 
 	"backend/internal/constants"
 	"backend/internal/modules/peserta/dto"
@@ -10,6 +14,7 @@ import (
 	"backend/internal/modules/peserta/repository"
 	"backend/internal/utils"
 
+	"github.com/xuri/excelize/v2"
 	"gorm.io/gorm"
 )
 
@@ -32,6 +37,7 @@ type PesertaService interface {
 	UpdatePeserta(id string, req *dto.UpdatePesertaRequest) (*dto.PesertaResponse, error)
 	DeletePeserta(id string) error
 	RestorePeserta(id string) error
+	ImportPesertaFromExcel(ctx context.Context, req *dto.ImportPesertaRequest) (*dto.ImportPesertaResponse, error)
 }
 
 type pesertaService struct {
@@ -169,4 +175,147 @@ func (s *pesertaService) DeletePeserta(id string) error {
 
 func (s *pesertaService) RestorePeserta(id string) error {
 	return s.repo.Restore(id)
+}
+
+func (s *pesertaService) ImportPesertaFromExcel(ctx context.Context, req *dto.ImportPesertaRequest) (*dto.ImportPesertaResponse, error) {
+	// 1. Validasi kelas exists
+	exists, err := s.repo.GetKelasExists(ctx, req.IDKelas)
+	if err != nil || !exists {
+		return nil, errors.New("kelas tidak ditemukan")
+	}
+
+	// 2. Buka file dari request
+	file, err := req.File.Open()
+	if err != nil {
+		return nil, errors.New("gagal membuka file")
+	}
+	defer file.Close()
+
+	// 3. Parse excel file
+	xlsx, err := excelize.OpenReader(file)
+	if err != nil {
+		return nil, errors.New("file bukan format excel yang valid")
+	}
+	defer xlsx.Close()
+
+	sheetName := xlsx.GetSheetName(0)
+	rows, err := xlsx.GetRows(sheetName)
+	if err != nil {
+		return nil, errors.New("gagal membaca sheet excel")
+	}
+
+	// 4. Parse & validasi tiap row (skip header, index 0)
+	type pendingRow struct {
+		row      *utils.ExcelPesertaRow
+		username string
+	}
+	var pendings []pendingRow
+	var errorDetails []dto.ImportPesertaErrorDetail
+	var processedCount, failedCount int
+	seenUsername := make(map[string]int) // username (lowercase) -> row pertama yang memakainya
+
+	for rowIndex := 1; rowIndex < len(rows); rowIndex++ {
+		row := rows[rowIndex]
+		if len(row) == 0 {
+			continue
+		}
+		processedCount++
+
+		excelRow := utils.ParseExcelPesertaRow(row, rowIndex+1)
+
+		validationErrors := utils.ValidatePesertaRow(excelRow)
+
+		usernameKey := strings.ToLower(strings.TrimSpace(excelRow.Username))
+		if usernameKey != "" {
+			if firstRow, dup := seenUsername[usernameKey]; dup {
+				validationErrors = append(validationErrors, "username duplikat dengan baris "+strconv.Itoa(firstRow))
+			} else {
+				seenUsername[usernameKey] = rowIndex + 1
+			}
+		}
+
+		if len(validationErrors) > 0 {
+			failedCount++
+			errorDetails = append(errorDetails, dto.ImportPesertaErrorDetail{
+				Row:   rowIndex + 1,
+				Error: strings.Join(validationErrors, "; "),
+			})
+			continue
+		}
+
+		pendings = append(pendings, pendingRow{row: excelRow, username: excelRow.Username})
+	}
+
+	// 5. Cek username yang sudah dipakai peserta lain di database
+	usernamesToCheck := make([]string, 0, len(pendings))
+	for _, p := range pendings {
+		usernamesToCheck = append(usernamesToCheck, p.username)
+	}
+	takenUsernames := make(map[string]bool)
+	if len(usernamesToCheck) > 0 {
+		taken, err := s.repo.GetByUsernames(usernamesToCheck)
+		if err != nil {
+			return nil, errors.New("gagal memeriksa username: " + err.Error())
+		}
+		for _, u := range taken {
+			takenUsernames[strings.ToLower(u)] = true
+		}
+	}
+
+	// 6. Hash password & siapkan baris final yang lolos semua validasi
+	var pesertaList []model.Peserta
+	successCount := 0
+	for _, p := range pendings {
+		if takenUsernames[strings.ToLower(p.username)] {
+			failedCount++
+			errorDetails = append(errorDetails, dto.ImportPesertaErrorDetail{
+				Row:   p.row.RowIndex,
+				Error: "username sudah digunakan",
+			})
+			continue
+		}
+
+		hashedPassword, err := utils.HashPassword(p.row.Password)
+		if err != nil {
+			failedCount++
+			errorDetails = append(errorDetails, dto.ImportPesertaErrorDetail{
+				Row:   p.row.RowIndex,
+				Error: "gagal memproses password",
+			})
+			continue
+		}
+
+		pesertaList = append(pesertaList, model.Peserta{
+			Nama:     p.row.Nama,
+			IDKelas:  req.IDKelas,
+			Username: p.username,
+			Password: hashedPassword,
+		})
+		successCount++
+	}
+
+	// 7. Bulk insert ke database
+	if len(pesertaList) > 0 {
+		if err := s.repo.BulkCreate(ctx, pesertaList); err != nil {
+			return nil, errors.New("gagal menyimpan data ke database: " + err.Error())
+		}
+	}
+
+	// Limit error details ke max 100
+	if len(errorDetails) > 100 {
+		errorDetails = errorDetails[:100]
+	}
+
+	return &dto.ImportPesertaResponse{
+		TotalProcessed: processedCount,
+		TotalSuccess:   successCount,
+		TotalFailed:    failedCount,
+		IDKelas:        req.IDKelas,
+		Timestamp:      time.Now(),
+		Summary: map[string]int{
+			"inserted": successCount,
+			"errors":   failedCount,
+		},
+		Errors: errorDetails,
+	}, nil
 }

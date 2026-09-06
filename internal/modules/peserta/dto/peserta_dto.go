@@ -1,5 +1,10 @@
 package dto
 
+import (
+	"mime/multipart"
+	"time"
+)
+
 type CreatePesertaRequest struct {
 	Nama     string `json:"nama" validate:"required"`
 	IDKelas  string `json:"id_kelas" validate:"required"`
@@ -30,4 +35,28 @@ type PesertaListResponse struct {
 	Page      int               `json:"page"`
 	PageSize  int               `json:"page_size"`
 	TotalPage int               `json:"total_page"`
+}
+
+// ImportPesertaRequest adalah request untuk import peserta dari excel.
+// Seluruh peserta dalam satu file akan masuk ke id_kelas yang sama.
+type ImportPesertaRequest struct {
+	IDKelas string                `form:"id_kelas" validate:"required"`
+	File    *multipart.FileHeader `form:"file" validate:"required"`
+}
+
+// ImportPesertaErrorDetail adalah detail error per row
+type ImportPesertaErrorDetail struct {
+	Row   int    `json:"row"`
+	Error string `json:"error"`
+}
+
+// ImportPesertaResponse adalah response dari import
+type ImportPesertaResponse struct {
+	TotalProcessed int                        `json:"total_processed"`
+	TotalSuccess   int                        `json:"total_success"`
+	TotalFailed    int                        `json:"total_failed"`
+	IDKelas        string                     `json:"id_kelas"`
+	Timestamp      time.Time                  `json:"timestamp"`
+	Summary        map[string]int             `json:"summary"`
+	Errors         []ImportPesertaErrorDetail `json:"errors"`
 }

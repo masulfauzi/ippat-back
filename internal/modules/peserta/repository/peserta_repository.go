@@ -1,7 +1,9 @@
 package repository
 
 import (
+	kelasModel "backend/internal/modules/kelas/model"
 	"backend/internal/modules/peserta/model"
+	"context"
 
 	"gorm.io/gorm"
 )
@@ -30,6 +32,9 @@ type PesertaRepository interface {
 	Update(peserta *model.Peserta) error
 	Delete(id string) error
 	Restore(id string) error
+	BulkCreate(ctx context.Context, pesertaList []model.Peserta) error
+	GetKelasExists(ctx context.Context, idKelas string) (bool, error)
+	GetByUsernames(usernames []string) ([]string, error)
 }
 
 type pesertaRepository struct {
@@ -123,4 +128,38 @@ func (r *pesertaRepository) Delete(id string) error {
 
 func (r *pesertaRepository) Restore(id string) error {
 	return r.db.Table("peserta").Where("id = ?", id).Update("deleted_at", nil).Error
+}
+
+func (r *pesertaRepository) BulkCreate(ctx context.Context, pesertaList []model.Peserta) error {
+	if len(pesertaList) == 0 {
+		return nil
+	}
+	return r.db.WithContext(ctx).CreateInBatches(pesertaList, 100).Error
+}
+
+func (r *pesertaRepository) GetKelasExists(ctx context.Context, idKelas string) (bool, error) {
+	var count int64
+	err := r.db.WithContext(ctx).
+		Model(&kelasModel.Kelas{}).
+		Where("id = ? AND deleted_at IS NULL", idKelas).
+		Count(&count).Error
+	if err != nil {
+		return false, err
+	}
+	return count > 0, nil
+}
+
+// GetByUsernames mengembalikan username-username (dari input) yang sudah dipakai peserta aktif lain.
+func (r *pesertaRepository) GetByUsernames(usernames []string) ([]string, error) {
+	if len(usernames) == 0 {
+		return nil, nil
+	}
+	var existing []string
+	err := r.db.Model(&model.Peserta{}).
+		Where("username IN ? AND deleted_at IS NULL", usernames).
+		Pluck("username", &existing).Error
+	if err != nil {
+		return nil, err
+	}
+	return existing, nil
 }
