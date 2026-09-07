@@ -2276,12 +2276,6 @@ const docTemplate = `{
                         "description": "Filter berdasarkan ID Jurusan",
                         "name": "id_jurusan",
                         "in": "query"
-                    },
-                    {
-                        "type": "string",
-                        "description": "Filter berdasarkan tingkat",
-                        "name": "tingkat",
-                        "in": "query"
                     }
                 ],
                 "responses": {
@@ -2959,6 +2953,46 @@ const docTemplate = `{
                 }
             }
         },
+        "/nilai/analisis-jawaban/{id_jadwal}": {
+            "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Menghasilkan file Excel berisi matriks jawaban tiap peserta untuk setiap nomor soal pada satu jadwal ujian. Sel jawaban diwarnai hijau (benar), merah (salah), atau putih (tidak dijawab), diikuti kolom Nilai dan Status Kelulusan di akhir. Response bukan JSON, melainkan file binary (.xlsx) yang langsung ter-download.",
+                "produces": [
+                    "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+                ],
+                "tags": [
+                    "Nilai"
+                ],
+                "summary": "Analisis jawaban peserta per soal (Excel)",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "ID Jadwal",
+                        "name": "id_jadwal",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "File Excel hasil analisis jawaban",
+                        "schema": {
+                            "type": "file"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/helpers.Response"
+                        }
+                    }
+                }
+            }
+        },
         "/nilai/export/{id_jadwal}": {
             "get": {
                 "security": [
@@ -3476,6 +3510,68 @@ const docTemplate = `{
                                     "properties": {
                                         "data": {
                                             "$ref": "#/definitions/dto.PesertaResponse"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/helpers.Response"
+                        }
+                    }
+                }
+            }
+        },
+        "/peserta/import": {
+            "post": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Upload file .xls/.xlsx (maks 10MB) berisi banyak peserta sekaligus untuk satu kelas. Kolom: Nama, Username, Password. Response berisi ringkasan jumlah berhasil/gagal beserta detail error per baris.",
+                "consumes": [
+                    "multipart/form-data"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Peserta"
+                ],
+                "summary": "Import peserta massal dari file Excel",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "ID Kelas tujuan",
+                        "name": "id_kelas",
+                        "in": "formData",
+                        "required": true
+                    },
+                    {
+                        "type": "file",
+                        "description": "File Excel (.xls/.xlsx, maks 10MB)",
+                        "name": "file",
+                        "in": "formData",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/helpers.Response"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/definitions/dto.ImportPesertaResponse"
                                         }
                                     }
                                 }
@@ -4637,7 +4733,6 @@ const docTemplate = `{
                 "id_bank_soal",
                 "id_kelas",
                 "nama_ujian",
-                "tingkat",
                 "wkt_mulai",
                 "wkt_selesai"
             ],
@@ -4662,9 +4757,6 @@ const docTemplate = `{
                     }
                 },
                 "nama_ujian": {
-                    "type": "string"
-                },
-                "tingkat": {
                     "type": "string"
                 },
                 "wkt_mulai": {
@@ -4744,17 +4836,13 @@ const docTemplate = `{
             "type": "object",
             "required": [
                 "id_jurusan",
-                "nama_kelas",
-                "tingkat"
+                "nama_kelas"
             ],
             "properties": {
                 "id_jurusan": {
                     "type": "string"
                 },
                 "nama_kelas": {
-                    "type": "string"
-                },
-                "tingkat": {
                     "type": "string"
                 }
             }
@@ -4867,6 +4955,49 @@ const docTemplate = `{
                 }
             }
         },
+        "dto.ImportPesertaErrorDetail": {
+            "type": "object",
+            "properties": {
+                "error": {
+                    "type": "string"
+                },
+                "row": {
+                    "type": "integer"
+                }
+            }
+        },
+        "dto.ImportPesertaResponse": {
+            "type": "object",
+            "properties": {
+                "errors": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/dto.ImportPesertaErrorDetail"
+                    }
+                },
+                "id_kelas": {
+                    "type": "string"
+                },
+                "summary": {
+                    "type": "object",
+                    "additionalProperties": {
+                        "type": "integer"
+                    }
+                },
+                "timestamp": {
+                    "type": "string"
+                },
+                "total_failed": {
+                    "type": "integer"
+                },
+                "total_processed": {
+                    "type": "integer"
+                },
+                "total_success": {
+                    "type": "integer"
+                }
+            }
+        },
         "dto.ImportSoalErrorDetail": {
             "type": "object",
             "properties": {
@@ -4938,9 +5069,6 @@ const docTemplate = `{
                     "type": "string"
                 },
                 "status_pengerjaan": {
-                    "type": "string"
-                },
-                "tingkat": {
                     "type": "string"
                 },
                 "wkt_mulai": {
@@ -5066,9 +5194,6 @@ const docTemplate = `{
                     "type": "string"
                 },
                 "nama_ujian": {
-                    "type": "string"
-                },
-                "tingkat": {
                     "type": "string"
                 },
                 "updated_at": {
@@ -5332,9 +5457,6 @@ const docTemplate = `{
                     "type": "string"
                 },
                 "nama_kelas": {
-                    "type": "string"
-                },
-                "tingkat": {
                     "type": "string"
                 },
                 "updated_at": {
@@ -5678,7 +5800,6 @@ const docTemplate = `{
                 "id_bank_soal",
                 "id_kelas",
                 "nama_ujian",
-                "tingkat",
                 "wkt_mulai",
                 "wkt_selesai"
             ],
@@ -5703,9 +5824,6 @@ const docTemplate = `{
                     }
                 },
                 "nama_ujian": {
-                    "type": "string"
-                },
-                "tingkat": {
                     "type": "string"
                 },
                 "wkt_mulai": {
@@ -5769,17 +5887,13 @@ const docTemplate = `{
             "type": "object",
             "required": [
                 "id_jurusan",
-                "nama_kelas",
-                "tingkat"
+                "nama_kelas"
             ],
             "properties": {
                 "id_jurusan": {
                     "type": "string"
                 },
                 "nama_kelas": {
-                    "type": "string"
-                },
-                "tingkat": {
                     "type": "string"
                 }
             }

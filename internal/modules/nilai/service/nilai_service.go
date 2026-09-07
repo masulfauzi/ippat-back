@@ -304,7 +304,7 @@ func (s *nilaiService) MulaiUjian(idPeserta, idJadwal string) (*dto.NilaiRespons
 		// walau kolom DB masih boolean.
 		var jadwal jadwalmodel.Jadwal
 		if err := tx.Table("jadwal").
-			Select("id, id_bank_soal, nama_ujian, tingkat, wkt_mulai, wkt_selesai, durasi, acak_soal::int AS acak_soal, acak_opsi::int AS acak_opsi, created_at, updated_at, deleted_at").
+			Select("id, id_bank_soal, nama_ujian, wkt_mulai, wkt_selesai, durasi, acak_soal::int AS acak_soal, acak_opsi::int AS acak_opsi, created_at, updated_at, deleted_at").
 			Where("id = ? AND deleted_at IS NULL", idJadwal).
 			First(&jadwal).Error; err != nil {
 			if errors.Is(err, gorm.ErrRecordNotFound) {

@@ -41,6 +41,11 @@ func RunMigrations(db *gorm.DB) error {
 	db.Exec("ALTER TABLE kategori_soal ALTER COLUMN benar TYPE numeric(5,2) USING benar::numeric(5,2)")
 	db.Exec("ALTER TABLE kategori_soal ALTER COLUMN salah TYPE numeric(5,2) USING salah::numeric(5,2)")
 
+	// Hapus kolom tingkat dari kelas & jadwal — aplikasi tidak lagi eksklusif untuk
+	// sekolah (tingkatan seperti X/XI/XII), sehingga field ini tidak relevan lagi.
+	db.Exec("ALTER TABLE kelas DROP COLUMN IF EXISTS tingkat")
+	db.Exec("ALTER TABLE jadwal DROP COLUMN IF EXISTS tingkat")
+
 	if err := db.AutoMigrate(
 		&usermodel.User{},
 		&mapelmodel.Mapel{},

@@ -18,7 +18,6 @@ func kelasWithJurusanToResponse(k *repository.KelasWithJurusan) *dto.KelasRespon
 		ID:          k.ID,
 		IDJurusan:   k.IDJurusan,
 		NamaKelas:   k.NamaKelas,
-		Tingkat:     k.Tingkat,
 		NamaJurusan: k.NamaJurusan,
 		CreatedAt:   k.CreatedAt,
 		UpdatedAt:   k.UpdatedAt,
@@ -28,7 +27,7 @@ func kelasWithJurusanToResponse(k *repository.KelasWithJurusan) *dto.KelasRespon
 type KelasService interface {
 	CreateKelas(req *dto.CreateKelasRequest) (*dto.KelasResponse, error)
 	GetKelasByID(id string) (*dto.KelasResponse, error)
-	GetAllKelas(page, pageSize int, idJurusan string, tingkat string) (*dto.KelasListResponse, error)
+	GetAllKelas(page, pageSize int, idJurusan string) (*dto.KelasListResponse, error)
 	UpdateKelas(id string, req *dto.UpdateKelasRequest) (*dto.KelasResponse, error)
 	DeleteKelas(id string) error
 	RestoreKelas(id string) error
@@ -46,7 +45,6 @@ func (s *kelasService) CreateKelas(req *dto.CreateKelasRequest) (*dto.KelasRespo
 	kelas := &model.Kelas{
 		IDJurusan: req.IDJurusan,
 		NamaKelas: req.NamaKelas,
-		Tingkat:   req.Tingkat,
 	}
 
 	if err := s.repo.Create(kelas); err != nil {
@@ -74,7 +72,7 @@ func (s *kelasService) GetKelasByID(id string) (*dto.KelasResponse, error) {
 	return kelasWithJurusanToResponse(kelas), nil
 }
 
-func (s *kelasService) GetAllKelas(page, pageSize int, idJurusan string, tingkat string) (*dto.KelasListResponse, error) {
+func (s *kelasService) GetAllKelas(page, pageSize int, idJurusan string) (*dto.KelasListResponse, error) {
 	if page <= 0 {
 		page = 1
 	}
@@ -82,7 +80,7 @@ func (s *kelasService) GetAllKelas(page, pageSize int, idJurusan string, tingkat
 		pageSize = 10
 	}
 
-	kelasList, total, err := s.repo.GetAll(page, pageSize, idJurusan, tingkat)
+	kelasList, total, err := s.repo.GetAll(page, pageSize, idJurusan)
 	if err != nil {
 		return nil, err
 	}
@@ -116,7 +114,6 @@ func (s *kelasService) UpdateKelas(id string, req *dto.UpdateKelasRequest) (*dto
 		ID:        kelasWithJurusan.ID,
 		IDJurusan: req.IDJurusan,
 		NamaKelas: req.NamaKelas,
-		Tingkat:   req.Tingkat,
 	}
 
 	if err := s.repo.Update(kelas); err != nil {
@@ -147,4 +144,3 @@ func (s *kelasService) DeleteKelas(id string) error {
 func (s *kelasService) RestoreKelas(id string) error {
 	return s.repo.Restore(id)
 }
-

@@ -3,7 +3,6 @@ package dto
 type CreateJadwalRequest struct {
 	IDBankSoal string   `json:"id_bank_soal" validate:"required"`
 	NamaUjian  string   `json:"nama_ujian" validate:"required"`
-	Tingkat    string   `json:"tingkat" validate:"required"`
 	WktMulai   string   `json:"wkt_mulai" validate:"required"`
 	WktSelesai string   `json:"wkt_selesai" validate:"required"`
 	Durasi     int      `json:"durasi" validate:"required,min=1"`
@@ -15,7 +14,6 @@ type CreateJadwalRequest struct {
 type UpdateJadwalRequest struct {
 	IDBankSoal string   `json:"id_bank_soal" validate:"required"`
 	NamaUjian  string   `json:"nama_ujian" validate:"required"`
-	Tingkat    string   `json:"tingkat" validate:"required"`
 	WktMulai   string   `json:"wkt_mulai" validate:"required"`
 	WktSelesai string   `json:"wkt_selesai" validate:"required"`
 	Durasi     int      `json:"durasi" validate:"required,min=1"`
@@ -37,20 +35,19 @@ type JurusanItem struct {
 }
 
 type JadwalResponse struct {
-	ID           string         `json:"id"`
-	IDBankSoal   string         `json:"id_bank_soal"`
-	NamaBankSoal string         `json:"nama_bank_soal"`
-	NamaUjian    string         `json:"nama_ujian"`
-	Tingkat      string         `json:"tingkat"`
-	WktMulai     string         `json:"wkt_mulai"`
-	WktSelesai   string         `json:"wkt_selesai"`
-	Durasi       int            `json:"durasi"`
-	AcakSoal     int            `json:"acak_soal"`
-	AcakOpsi     int            `json:"acak_opsi"`
-	IDKelas      []KelasItem    `json:"id_kelas"`
-	IDJurusan    []JurusanItem  `json:"id_jurusan"`
-	CreatedAt    string         `json:"created_at"`
-	UpdatedAt    string         `json:"updated_at"`
+	ID           string        `json:"id"`
+	IDBankSoal   string        `json:"id_bank_soal"`
+	NamaBankSoal string        `json:"nama_bank_soal"`
+	NamaUjian    string        `json:"nama_ujian"`
+	WktMulai     string        `json:"wkt_mulai"`
+	WktSelesai   string        `json:"wkt_selesai"`
+	Durasi       int           `json:"durasi"`
+	AcakSoal     int           `json:"acak_soal"`
+	AcakOpsi     int           `json:"acak_opsi"`
+	IDKelas      []KelasItem   `json:"id_kelas"`
+	IDJurusan    []JurusanItem `json:"id_jurusan"`
+	CreatedAt    string        `json:"created_at"`
+	UpdatedAt    string        `json:"updated_at"`
 }
 
 type JadwalListResponse struct {
@@ -66,7 +63,6 @@ type JadwalAktifResponse struct {
 	IDBankSoal       string  `json:"id_bank_soal"`
 	NamaBankSoal     string  `json:"nama_bank_soal"`
 	NamaUjian        string  `json:"nama_ujian"`
-	Tingkat          string  `json:"tingkat"`
 	WktMulai         string  `json:"wkt_mulai"`
 	WktSelesai       string  `json:"wkt_selesai"`
 	Durasi           int     `json:"durasi"`

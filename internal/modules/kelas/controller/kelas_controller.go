@@ -50,7 +50,6 @@ func (c *KelasController) CreateKelas(ctx *fiber.Ctx) error {
 // @Param        page       query     int     false  "Nomor halaman"          default(1)
 // @Param        page_size  query     int     false  "Jumlah data per halaman" default(10)
 // @Param        id_jurusan query     string  false  "Filter berdasarkan ID Jurusan"
-// @Param        tingkat    query     string  false  "Filter berdasarkan tingkat"
 // @Success      200        {object}  helpers.Response{data=dto.KelasListResponse}
 // @Failure      500        {object}  helpers.Response
 // @Router       /kelas [get]
@@ -58,7 +57,6 @@ func (c *KelasController) GetAllKelas(ctx *fiber.Ctx) error {
 	page := ctx.Query("page", "1")
 	pageSize := ctx.Query("page_size", "10")
 	idJurusan := ctx.Query("id_jurusan", "")
-	tingkat := ctx.Query("tingkat", "")
 
 	pageNum, err := strconv.Atoi(page)
 	if err != nil || pageNum <= 0 {
@@ -70,7 +68,7 @@ func (c *KelasController) GetAllKelas(ctx *fiber.Ctx) error {
 		pageSizeNum = 10
 	}
 
-	resp, err := c.service.GetAllKelas(pageNum, pageSizeNum, idJurusan, tingkat)
+	resp, err := c.service.GetAllKelas(pageNum, pageSizeNum, idJurusan)
 	if err != nil {
 		return helpers.ErrorResponse(ctx, fiber.StatusInternalServerError, err.Error(), nil)
 	}

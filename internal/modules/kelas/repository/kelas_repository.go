@@ -8,13 +8,12 @@ import (
 
 // KelasWithJurusan adalah hasil query kelas dengan JOIN ke jurusan
 type KelasWithJurusan struct {
-	ID          string `gorm:"column:id"`
-	IDJurusan   string `gorm:"column:id_jurusan"`
-	NamaKelas   string `gorm:"column:nama_kelas"`
-	Tingkat     string `gorm:"column:tingkat"`
-	NamaJurusan string `gorm:"column:nama_jurusan"`
-	CreatedAt   string `gorm:"column:created_at"`
-	UpdatedAt   string `gorm:"column:updated_at"`
+	ID          string  `gorm:"column:id"`
+	IDJurusan   string  `gorm:"column:id_jurusan"`
+	NamaKelas   string  `gorm:"column:nama_kelas"`
+	NamaJurusan string  `gorm:"column:nama_jurusan"`
+	CreatedAt   string  `gorm:"column:created_at"`
+	UpdatedAt   string  `gorm:"column:updated_at"`
 	DeletedAt   *string `gorm:"column:deleted_at"`
 }
 
@@ -26,7 +25,7 @@ func (KelasWithJurusan) TableName() string {
 type KelasRepository interface {
 	Create(kelas *model.Kelas) error
 	GetByID(id string) (*KelasWithJurusan, error)
-	GetAll(page, pageSize int, idJurusan string, tingkat string) ([]KelasWithJurusan, int64, error)
+	GetAll(page, pageSize int, idJurusan string) ([]KelasWithJurusan, int64, error)
 	Update(kelas *model.Kelas) error
 	Delete(id string) error
 	Restore(id string) error
@@ -47,7 +46,7 @@ func (r *kelasRepository) Create(kelas *model.Kelas) error {
 func (r *kelasRepository) GetByID(id string) (*KelasWithJurusan, error) {
 	var kelas KelasWithJurusan
 	err := r.db.
-		Select("kelas.id, kelas.id_jurusan, kelas.nama_kelas, kelas.tingkat, kelas.created_at, kelas.updated_at, kelas.deleted_at, jurusan.nama_jurusan").
+		Select("kelas.id, kelas.id_jurusan, kelas.nama_kelas, kelas.created_at, kelas.updated_at, kelas.deleted_at, jurusan.nama_jurusan").
 		Joins("LEFT JOIN jurusan ON kelas.id_jurusan = jurusan.id").
 		Where("kelas.id = ? AND kelas.deleted_at IS NULL", id).
 		First(&kelas).Error
@@ -57,7 +56,7 @@ func (r *kelasRepository) GetByID(id string) (*KelasWithJurusan, error) {
 	return &kelas, nil
 }
 
-func (r *kelasRepository) GetAll(page, pageSize int, idJurusan string, tingkat string) ([]KelasWithJurusan, int64, error) {
+func (r *kelasRepository) GetAll(page, pageSize int, idJurusan string) ([]KelasWithJurusan, int64, error) {
 	var kelasList []KelasWithJurusan
 	var total int64
 
@@ -77,24 +76,18 @@ func (r *kelasRepository) GetAll(page, pageSize int, idJurusan string, tingkat s
 	if idJurusan != "" {
 		countQuery = countQuery.Where("kelas.id_jurusan = ?", idJurusan)
 	}
-	if tingkat != "" {
-		countQuery = countQuery.Where("kelas.tingkat = ?", tingkat)
-	}
 
 	if err := countQuery.Count(&total).Error; err != nil {
 		return nil, 0, err
 	}
 
 	query := r.db.
-		Select("kelas.id, kelas.id_jurusan, kelas.nama_kelas, kelas.tingkat, kelas.created_at, kelas.updated_at, kelas.deleted_at, jurusan.nama_jurusan").
+		Select("kelas.id, kelas.id_jurusan, kelas.nama_kelas, kelas.created_at, kelas.updated_at, kelas.deleted_at, jurusan.nama_jurusan").
 		Joins("LEFT JOIN jurusan ON kelas.id_jurusan = jurusan.id").
 		Where("kelas.deleted_at IS NULL")
 
 	if idJurusan != "" {
 		query = query.Where("kelas.id_jurusan = ?", idJurusan)
-	}
-	if tingkat != "" {
-		query = query.Where("kelas.tingkat = ?", tingkat)
 	}
 
 	err := query.Offset(offset).Limit(pageSize).Find(&kelasList).Error

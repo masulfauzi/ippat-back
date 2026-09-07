@@ -26,19 +26,15 @@ func SeedKelas(db *gorm.DB) error {
 		return nil
 	}
 
-	tingkatan := []string{"X", "XI", "XII"}
 	var kelasList []model.Kelas
 
 	for _, j := range jurusanList {
-		for _, tingkat := range tingkatan {
-			kelasList = append(kelasList, model.Kelas{
-				IDJurusan: j.ID,
-				NamaKelas: fmt.Sprintf("%s - %s", tingkat, j.NamaJurusan),
-				Tingkat:   tingkat,
-				CreatedAt: time.Now(),
-				UpdatedAt: time.Now(),
-			})
-		}
+		kelasList = append(kelasList, model.Kelas{
+			IDJurusan: j.ID,
+			NamaKelas: fmt.Sprintf("Kelas %s", j.NamaJurusan),
+			CreatedAt: time.Now(),
+			UpdatedAt: time.Now(),
+		})
 	}
 
 	return db.CreateInBatches(kelasList, 100).Error

@@ -96,8 +96,6 @@ definitions:
         type: array
       nama_ujian:
         type: string
-      tingkat:
-        type: string
       wkt_mulai:
         type: string
       wkt_selesai:
@@ -107,7 +105,6 @@ definitions:
     - id_bank_soal
     - id_kelas
     - nama_ujian
-    - tingkat
     - wkt_mulai
     - wkt_selesai
     type: object
@@ -163,12 +160,9 @@ definitions:
         type: string
       nama_kelas:
         type: string
-      tingkat:
-        type: string
     required:
     - id_jurusan
     - nama_kelas
-    - tingkat
     type: object
   dto.CreateMapelRequest:
     properties:
@@ -244,6 +238,34 @@ definitions:
       role:
         type: string
     type: object
+  dto.ImportPesertaErrorDetail:
+    properties:
+      error:
+        type: string
+      row:
+        type: integer
+    type: object
+  dto.ImportPesertaResponse:
+    properties:
+      errors:
+        items:
+          $ref: '#/definitions/dto.ImportPesertaErrorDetail'
+        type: array
+      id_kelas:
+        type: string
+      summary:
+        additionalProperties:
+          type: integer
+        type: object
+      timestamp:
+        type: string
+      total_failed:
+        type: integer
+      total_processed:
+        type: integer
+      total_success:
+        type: integer
+    type: object
   dto.ImportSoalErrorDetail:
     properties:
       error:
@@ -291,8 +313,6 @@ definitions:
       nama_ujian:
         type: string
       status_pengerjaan:
-        type: string
-      tingkat:
         type: string
       wkt_mulai:
         type: string
@@ -375,8 +395,6 @@ definitions:
       nama_bank_soal:
         type: string
       nama_ujian:
-        type: string
-      tingkat:
         type: string
       updated_at:
         type: string
@@ -549,8 +567,6 @@ definitions:
       nama_jurusan:
         type: string
       nama_kelas:
-        type: string
-      tingkat:
         type: string
       updated_at:
         type: string
@@ -791,8 +807,6 @@ definitions:
         type: array
       nama_ujian:
         type: string
-      tingkat:
-        type: string
       wkt_mulai:
         type: string
       wkt_selesai:
@@ -802,7 +816,6 @@ definitions:
     - id_bank_soal
     - id_kelas
     - nama_ujian
-    - tingkat
     - wkt_mulai
     - wkt_selesai
     type: object
@@ -846,12 +859,9 @@ definitions:
         type: string
       nama_kelas:
         type: string
-      tingkat:
-        type: string
     required:
     - id_jurusan
     - nama_kelas
-    - tingkat
     type: object
   dto.UpdateMapelRequest:
     properties:
@@ -2312,10 +2322,6 @@ paths:
         in: query
         name: id_jurusan
         type: string
-      - description: Filter berdasarkan tingkat
-        in: query
-        name: tingkat
-        type: string
       produces:
       - application/json
       responses:
@@ -2832,6 +2838,35 @@ paths:
       summary: Pulihkan data nilai yang sudah dihapus
       tags:
       - Nilai
+  /nilai/analisis-jawaban/{id_jadwal}:
+    get:
+      description: Menghasilkan file Excel berisi matriks jawaban tiap peserta untuk
+        setiap nomor soal pada satu jadwal ujian. Sel jawaban diwarnai hijau (benar),
+        merah (salah), atau putih (tidak dijawab), diikuti kolom Nilai dan Status
+        Kelulusan di akhir. Response bukan JSON, melainkan file binary (.xlsx) yang
+        langsung ter-download.
+      parameters:
+      - description: ID Jadwal
+        in: path
+        name: id_jadwal
+        required: true
+        type: string
+      produces:
+      - application/vnd.openxmlformats-officedocument.spreadsheetml.sheet
+      responses:
+        "200":
+          description: File Excel hasil analisis jawaban
+          schema:
+            type: file
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/helpers.Response'
+      security:
+      - BearerAuth: []
+      summary: Analisis jawaban peserta per soal (Excel)
+      tags:
+      - Nilai
   /nilai/export/{id_jadwal}:
     get:
       description: Menghasilkan file ZIP berisi rekap nilai seluruh peserta untuk
@@ -3156,6 +3191,45 @@ paths:
       security:
       - BearerAuth: []
       summary: Pulihkan peserta yang sudah dihapus
+      tags:
+      - Peserta
+  /peserta/import:
+    post:
+      consumes:
+      - multipart/form-data
+      description: 'Upload file .xls/.xlsx (maks 10MB) berisi banyak peserta sekaligus
+        untuk satu kelas. Kolom: Nama, Username, Password. Response berisi ringkasan
+        jumlah berhasil/gagal beserta detail error per baris.'
+      parameters:
+      - description: ID Kelas tujuan
+        in: formData
+        name: id_kelas
+        required: true
+        type: string
+      - description: File Excel (.xls/.xlsx, maks 10MB)
+        in: formData
+        name: file
+        required: true
+        type: file
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/helpers.Response'
+            - properties:
+                data:
+                  $ref: '#/definitions/dto.ImportPesertaResponse'
+              type: object
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/helpers.Response'
+      security:
+      - BearerAuth: []
+      summary: Import peserta massal dari file Excel
       tags:
       - Peserta
   /soal:
